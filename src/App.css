@@ -3,6 +3,9 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 /* Navbar */
@@ -156,7 +159,8 @@
 @media (max-width: 768px) {
   .navbar {
     flex-wrap: wrap;
-    padding: var(--space-sm) var(--space-md);
+    padding: var(--space-sm);
+    margin: var(--space-sm);
   }
 
   .mobile-menu-btn {
@@ -184,11 +188,12 @@
   }
 
   .nav-actions {
-    display: none; /* Hide login button from header on small screens when closed, or handle differently */
+    display: none;
+    /* Hide login button from header on small screens when closed, or handle differently */
   }
 
   /* Optional: Show login in the menu if open - adjusting layout */
-  .nav-links.open + .nav-actions {
+  .nav-links.open+.nav-actions {
     display: block;
     width: 100%;
     margin-top: var(--space-sm);
