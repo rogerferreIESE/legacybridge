@@ -7,8 +7,6 @@ import LegalDiagnostic from './components/LegalDiagnostic';
 import BusinessOverview from './components/BusinessOverview';
 import Marketplace from './components/Marketplace';
 import TheVault from './components/TheVault';
-
-import { TestConnection } from './components/TestConnection';
 import AuthModal from './components/AuthModal';
 import { supabase } from './lib/supabase';
 
@@ -56,7 +54,6 @@ function App() {
         </button>
 
         <div className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
-          <TestConnection />
           <button
             className={`nav-btn ${activeTab === 'hook' ? 'active' : ''}`}
             onClick={() => handleTabChange('hook')}
