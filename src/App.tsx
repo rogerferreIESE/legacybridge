@@ -8,6 +8,8 @@ import BusinessOverview from './components/BusinessOverview';
 import Marketplace from './components/Marketplace';
 import TheVault from './components/TheVault';
 
+import { TestConnection } from './components/TestConnection';
+
 function App() {
   const [activeTab, setActiveTab] = useState<'hook' | 'overview' | 'shield' | 'market' | 'vault'>('overview');
 
@@ -20,6 +22,7 @@ function App() {
           <span className="brand-text">Legacy Bridge</span>
         </div>
         <div className="nav-links">
+          <TestConnection />
           <button
             className={`nav-btn ${activeTab === 'hook' ? 'active' : ''}`}
             onClick={() => setActiveTab('hook')}
