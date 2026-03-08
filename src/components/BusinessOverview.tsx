@@ -37,7 +37,6 @@ const BusinessOverview: React.FC = () => {
     const [myCompanies, setMyCompanies] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [userId, setUserId] = useState<string | null>(null);
-    const [userRole, setUserRole] = useState<string | null>(null);
 
     const [isSaving, setIsSaving] = useState(false);
 
@@ -74,7 +73,6 @@ const BusinessOverview: React.FC = () => {
         if (session?.user) {
             setUserId(session.user.id);
             const { data: profileData } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
-            if (profileData) setUserRole(profileData.role);
 
             // Fetch companies owned by this user
             const { data: companiesData, error } = await supabase
@@ -178,11 +176,10 @@ const BusinessOverview: React.FC = () => {
                     {myCompanies.length === 0 ? (
                         <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center', gridColumn: '1 / -1' }}>
                             <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>You have not listed any businesses yet.</p>
-                            {userRole === 'seller' && (
-                                <button className="btn-primary" onClick={() => { resetProfile(); setMode('edit'); }}>
-                                    + Create Business Profile
-                                </button>
-                            )}
+                            {/* Always allow creating a profile if empty, regardless of role */}
+                            <button className="btn-primary" onClick={() => { resetProfile(); setMode('edit'); }}>
+                                + Create Business Profile
+                            </button>
                         </div>
                     ) : (
                         myCompanies.map((company) => (
@@ -198,7 +195,7 @@ const BusinessOverview: React.FC = () => {
                     )}
                 </div>
 
-                {myCompanies.length > 0 && userRole === 'seller' && (
+                {myCompanies.length > 0 && (
                     <div style={{ textAlign: 'center', marginTop: '3rem' }}>
                         <button className="btn-primary" onClick={() => { resetProfile(); setMode('edit'); }}>
                             + Add Another Business
