@@ -7,6 +7,7 @@ import LegalDiagnostic from './components/LegalDiagnostic';
 import BusinessOverview from './components/BusinessOverview';
 import Marketplace from './components/Marketplace';
 import TheVault from './components/TheVault';
+import LandingPage from './components/LandingPage';
 import AuthModal from './components/AuthModal';
 import { supabase } from './lib/supabase';
 
@@ -45,46 +46,50 @@ function App() {
           <span className="brand-text">Legacy Bridge</span>
         </div>
 
-        <button
-          className="mobile-menu-btn"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {isMobileMenuOpen ? '✕' : '☰'}
-        </button>
+        {session && (
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? '✕' : '☰'}
+          </button>
+        )}
 
-        <div className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
-          <button
-            className={`nav-btn ${activeTab === 'hook' ? 'active' : ''}`}
-            onClick={() => handleTabChange('hook')}
-          >
-            Calculator
-          </button>
-          <button
-            className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => handleTabChange('overview')}
-          >
-            Business Overview
-          </button>
-          <button
-            className={`nav-btn ${activeTab === 'shield' ? 'active' : ''}`}
-            onClick={() => handleTabChange('shield')}
-          >
-            Diagnostic
-          </button>
-          <button
-            className={`nav-btn ${activeTab === 'market' ? 'active' : ''}`}
-            onClick={() => handleTabChange('market')}
-          >
-            Marketplace
-          </button>
-          <button
-            className={`nav-btn ${activeTab === 'vault' ? 'active' : ''}`}
-            onClick={() => handleTabChange('vault')}
-          >
-            The Vault
-          </button>
-        </div>
+        {session && (
+          <div className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
+            <button
+              className={`nav-btn ${activeTab === 'hook' ? 'active' : ''}`}
+              onClick={() => handleTabChange('hook')}
+            >
+              Calculator
+            </button>
+            <button
+              className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
+              onClick={() => handleTabChange('overview')}
+            >
+              Business Overview
+            </button>
+            <button
+              className={`nav-btn ${activeTab === 'shield' ? 'active' : ''}`}
+              onClick={() => handleTabChange('shield')}
+            >
+              Diagnostic
+            </button>
+            <button
+              className={`nav-btn ${activeTab === 'market' ? 'active' : ''}`}
+              onClick={() => handleTabChange('market')}
+            >
+              Marketplace
+            </button>
+            <button
+              className={`nav-btn ${activeTab === 'vault' ? 'active' : ''}`}
+              onClick={() => handleTabChange('vault')}
+            >
+              The Vault
+            </button>
+          </div>
+        )}
         <div className="nav-actions">
           {session ? (
             <button className="btn-secondary" onClick={() => supabase.auth.signOut()}>
@@ -100,13 +105,17 @@ function App() {
 
       {/* Main Content Area */}
       <main className="main-content">
-        <div className="content-wrapper animate-fade-in">
-          {activeTab === 'overview' && <BusinessOverview />}
-          {activeTab === 'hook' && <ValuationCalculator />}
-          {activeTab === 'shield' && <LegalDiagnostic />}
-          {activeTab === 'market' && <Marketplace />}
-          {activeTab === 'vault' && <TheVault />}
-        </div>
+        {session ? (
+          <div className="content-wrapper animate-fade-in">
+            {activeTab === 'overview' && <BusinessOverview />}
+            {activeTab === 'hook' && <ValuationCalculator />}
+            {activeTab === 'shield' && <LegalDiagnostic />}
+            {activeTab === 'market' && <Marketplace />}
+            {activeTab === 'vault' && <TheVault />}
+          </div>
+        ) : (
+          <LandingPage onGetStarted={() => setIsAuthOpen(true)} />
+        )}
       </main>
 
       <AuthModal
