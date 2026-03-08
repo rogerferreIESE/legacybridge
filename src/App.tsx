@@ -40,13 +40,13 @@ function App() {
   return (
     <div className="app-container">
       {/* Navigation */}
-      <nav className="navbar glass-panel">
-        <div className="nav-brand">
-          <span className="brand-icon">🌉</span>
-          <span className="brand-text">Legacy Bridge</span>
-        </div>
+      {session && (
+        <nav className="navbar glass-panel">
+          <div className="nav-brand">
+            <span className="brand-icon">🌉</span>
+            <span className="brand-text">Legacy Bridge</span>
+          </div>
 
-        {session && (
           <button
             className="mobile-menu-btn"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -54,9 +54,7 @@ function App() {
           >
             {isMobileMenuOpen ? '✕' : '☰'}
           </button>
-        )}
 
-        {session && (
           <div className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
             <button
               className={`nav-btn ${activeTab === 'hook' ? 'active' : ''}`}
@@ -89,19 +87,14 @@ function App() {
               The Vault
             </button>
           </div>
-        )}
-        <div className="nav-actions">
-          {session ? (
+
+          <div className="nav-actions">
             <button className="btn-secondary" onClick={() => supabase.auth.signOut()}>
               Sign Out
             </button>
-          ) : (
-            <button className="btn-primary" onClick={() => setIsAuthOpen(true)}>
-              Login / Sign Up
-            </button>
-          )}
-        </div>
-      </nav>
+          </div>
+        </nav>
+      )}
 
       {/* Main Content Area */}
       <main className="main-content">
