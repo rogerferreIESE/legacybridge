@@ -18,16 +18,31 @@ function App() {
 
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [session, setSession] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+
+  const fetchProfile = async (userId: string) => {
+    const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
+    if (!error && data) {
+      setUserProfile(data);
+    }
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      if (session) fetchProfile(session.user.id);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      if (session) {
+        fetchProfile(session.user.id);
+      } else {
+        setUserProfile(null);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -90,9 +105,33 @@ function App() {
           </div>
 
           <div className="nav-actions">
-            <button className="btn-secondary" onClick={() => supabase.auth.signOut()}>
-              Sign Out
-            </button>
+            <div className="profile-dropdown-container">
+              <button
+                className="btn-secondary profile-toggle"
+                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+              >
+                Hi, {userProfile?.first_name || 'User'} ▾
+              </button>
+              {isProfileDropdownOpen && (
+                <div className="profile-dropdown-menu glass-panel animate-fade-in">
+                  <div className="dropdown-header">
+                    <p className="dropdown-name">
+                      {userProfile?.first_name} {userProfile?.last_name || ''}
+                    </p>
+                    <p className="dropdown-email">{session.user.email}</p>
+                  </div>
+                  <button
+                    className="dropdown-item sign-out-btn"
+                    onClick={() => {
+                      setIsProfileDropdownOpen(false);
+                      supabase.auth.signOut();
+                    }}
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </nav>
       )}

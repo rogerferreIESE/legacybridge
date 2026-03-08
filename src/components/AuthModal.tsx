@@ -14,6 +14,12 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
     const [password, setPassword] = useState('');
     const [role, setRole] = useState<'buyer' | 'seller'>('buyer');
 
+    // New Extended Profile Fields
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [country, setCountry] = useState('');
+
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
@@ -39,10 +45,14 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
 
                 // If Supabase has email confirmations disabled, the user is immediately returned
                 if (data.user) {
-                    // Add the role to our custom profiles table
+                    // Add the role and extended profile info to our custom profiles table
                     const { error: profileError } = await supabase.from('profiles').insert({
                         id: data.user.id,
-                        role: role
+                        role: role,
+                        first_name: firstName,
+                        last_name: lastName,
+                        phone: phone,
+                        country: country
                     });
 
                     if (profileError) throw profileError;
@@ -96,25 +106,76 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
                     </div>
 
                     {!isLogin && (
-                        <div className="form-group">
-                            <label>I want to use Legacy Bridge as a:</label>
-                            <div className="auth-role-selector">
-                                <button
-                                    type="button"
-                                    className={`role-btn ${role === 'buyer' ? 'active' : ''}`}
-                                    onClick={() => setRole('buyer')}
-                                >
-                                    Buyer
-                                </button>
-                                <button
-                                    type="button"
-                                    className={`role-btn ${role === 'seller' ? 'active' : ''}`}
-                                    onClick={() => setRole('seller')}
-                                >
-                                    Seller
-                                </button>
+                        <>
+                            <div className="form-group" style={{ display: 'flex', gap: '8px', flexDirection: 'row' }}>
+                                <div style={{ flex: 1 }}>
+                                    <label>First Name</label>
+                                    <input
+                                        type="text"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        required
+                                        className="auth-input"
+                                        style={{ width: '100%', marginTop: '4px' }}
+                                    />
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                    <label>Last Name</label>
+                                    <input
+                                        type="text"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        required
+                                        className="auth-input"
+                                        style={{ width: '100%', marginTop: '4px' }}
+                                    />
+                                </div>
                             </div>
-                        </div>
+                            <div className="form-group" style={{ display: 'flex', gap: '8px', flexDirection: 'row' }}>
+                                <div style={{ flex: 1 }}>
+                                    <label>Phone Number</label>
+                                    <input
+                                        type="tel"
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                        required
+                                        className="auth-input"
+                                        style={{ width: '100%', marginTop: '4px' }}
+                                    />
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                    <label>Country of Residence</label>
+                                    <input
+                                        type="text"
+                                        value={country}
+                                        onChange={(e) => setCountry(e.target.value)}
+                                        required
+                                        className="auth-input"
+                                        style={{ width: '100%', marginTop: '4px' }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label>I want to use Legacy Bridge as a:</label>
+                                <div className="auth-role-selector">
+                                    <button
+                                        type="button"
+                                        className={`role-btn ${role === 'buyer' ? 'active' : ''}`}
+                                        onClick={() => setRole('buyer')}
+                                    >
+                                        Buyer
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`role-btn ${role === 'seller' ? 'active' : ''}`}
+                                        onClick={() => setRole('seller')}
+                                    >
+                                        Seller
+                                    </button>
+                                </div>
+                            </div>
+                        </>
                     )}
 
                     <button type="submit" className="btn-primary auth-submit" disabled={loading}>
