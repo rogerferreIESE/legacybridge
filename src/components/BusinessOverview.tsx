@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 import './BusinessOverview.css';
 
 interface BusinessProfile {
@@ -30,7 +31,17 @@ interface BusinessProfile {
 }
 
 const BusinessOverview: React.FC = () => {
-    const [isEditing, setIsEditing] = useState(true);
+    // Mode can be: 'list' (viewing owned companies), 'edit' (creating/editing a company), 'view' (viewing summary of a company)
+    const [mode, setMode] = useState<'list' | 'edit' | 'view'>('list');
+
+    const [myCompanies, setMyCompanies] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [userId, setUserId] = useState<string | null>(null);
+    const [userRole, setUserRole] = useState<string | null>(null);
+
+    const [isSaving, setIsSaving] = useState(false);
+
+    // The current profile being edited or viewed
     const [profile, setProfile] = useState<BusinessProfile>({
         name: '',
         industry: '',
@@ -52,20 +63,153 @@ const BusinessOverview: React.FC = () => {
         willingnessToStay: ''
     });
 
+    useEffect(() => {
+        checkUserAndFetchCompanies();
+    }, []);
+
+    const checkUserAndFetchCompanies = async () => {
+        setLoading(true);
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (session?.user) {
+            setUserId(session.user.id);
+            const { data: profileData } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
+            if (profileData) setUserRole(profileData.role);
+
+            // Fetch companies owned by this user
+            const { data: companiesData, error } = await supabase
+                .from('companies')
+                .select('*')
+                .eq('user_id', session.user.id)
+                .order('created_at', { ascending: false });
+
+            if (!error && companiesData) {
+                setMyCompanies(companiesData);
+                // If they have companies, show the list. If not, go straight to edit (if seller)
+                if (companiesData.length === 0 && profileData?.role === 'seller') {
+                    setMode('edit');
+                } else {
+                    setMode('list');
+                }
+            }
+        }
+        setLoading(false);
+    };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setProfile(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
+        if (!userId) {
+            alert("You must be logged in to save a profile.");
+            return;
+        }
+
         if (!profile.name || !profile.industry || !profile.description) {
             alert('Please fill out the critical fields: Name, Industry, and Description.');
             return;
         }
-        setIsEditing(false);
+
+        setIsSaving(true);
+        try {
+            // Re-map asking price if provided in details later, but for now we leave it null 
+            // since we don't have a direct "askingPrice" in BusinessProfile
+            const { error } = await supabase.from('companies').insert({
+                user_id: userId,
+                name: profile.name,
+                industry: profile.industry,
+                description: profile.description,
+                details: profile // Save the entire rich profile as JSON
+            });
+
+            if (error) throw error;
+
+            await checkUserAndFetchCompanies(); // Refresh list
+            setMode('list'); // Go back to list
+
+            // Reset form
+            resetProfile();
+
+        } catch (err) {
+            console.error("Error saving profile:", err);
+            alert("There was an error saving your profile.");
+        } finally {
+            setIsSaving(false);
+        }
     };
 
-    if (!isEditing) {
+    const handleViewCompany = (company: any) => {
+        // Hydrate the profile state with the stored JSON details OR map flat fields
+        if (company.details) {
+            setProfile(company.details);
+        } else {
+            // Fallback for companies created via the other minimal form
+            const newProfile = { ...profile, name: company.name, industry: company.industry, description: company.description };
+            // Reset other fields
+            setProfile(newProfile);
+        }
+        setMode('view');
+    };
+
+    const resetProfile = () => {
+        setProfile({
+            name: '', industry: '', foundedYear: '', description: '', locations: '', employees: '',
+            ownershipStructure: '', mainCustomers: '', keyProducts: '', competitiveAdvantage: '',
+            recurringRevenue: '0', businessModel: '', supplierConcentration: '', ownerInvolvement: '',
+            exitMotivation: '', exitTimeline: '', transactionType: '', willingnessToStay: ''
+        });
+    }
+
+    if (loading) {
+        return <div className="overview-container" style={{ textAlign: 'center', marginTop: '4rem' }}>Loading profiles...</div>;
+    }
+
+    if (mode === 'list') {
+        return (
+            <div className="overview-container animate-fade-in">
+                <div className="overview-header text-center">
+                    <h2>Your Listed Businesses</h2>
+                    <p className="subtitle">Manage the profiles you have created for the Legacy Bridge platform.</p>
+                </div>
+
+                <div className="listings-grid" style={{ marginTop: '2rem' }}>
+                    {myCompanies.length === 0 ? (
+                        <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center', gridColumn: '1 / -1' }}>
+                            <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>You have not listed any businesses yet.</p>
+                            {userRole === 'seller' && (
+                                <button className="btn-primary" onClick={() => { resetProfile(); setMode('edit'); }}>
+                                    + Create Business Profile
+                                </button>
+                            )}
+                        </div>
+                    ) : (
+                        myCompanies.map((company) => (
+                            <div key={company.id} className="glass-panel listing-card" style={{ cursor: 'pointer' }} onClick={() => handleViewCompany(company)}>
+                                <h3 className="listing-title">{company.name}</h3>
+                                <p className="listing-region" style={{ marginBottom: '1rem' }}>{company.industry}</p>
+                                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                    {company.description}
+                                </p>
+                                <button className="btn-secondary w-full" style={{ marginTop: '1rem' }}>View Full Profile</button>
+                            </div>
+                        ))
+                    )}
+                </div>
+
+                {myCompanies.length > 0 && userRole === 'seller' && (
+                    <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+                        <button className="btn-primary" onClick={() => { resetProfile(); setMode('edit'); }}>
+                            + Add Another Business
+                        </button>
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    if (mode === 'view') {
         // Mock AI Confidence Indicators based on profile data
         const indicators = [
             profile.recurringRevenue && parseInt(profile.recurringRevenue) > 50 ? { text: "+50% Recurring Revenue", icon: "🔄" } : null,
@@ -77,6 +221,9 @@ const BusinessOverview: React.FC = () => {
 
         return (
             <div className="overview-container animate-fade-in">
+                <button className="btn-secondary back-btn" onClick={() => setMode('list')} style={{ marginBottom: '1rem' }}>
+                    ← Back to Listings
+                </button>
                 <div className="overview-header text-center">
                     <h2>Legacy Bridge Profile</h2>
                     <p className="subtitle">Verified Institutional Data Record</p>
@@ -89,7 +236,7 @@ const BusinessOverview: React.FC = () => {
                             <h3 className="company-name">{profile.name}</h3>
                             <span className="industry-tag">{profile.industry}</span>
                         </div>
-                        <button className="btn-secondary edit-btn" onClick={() => setIsEditing(true)}>Edit Profile</button>
+                        {/* <button className="btn-secondary edit-btn" onClick={() => setMode('edit')}>Edit Profile</button> */}
                     </div>
 
                     <div className="summary-grid">
@@ -158,6 +305,11 @@ const BusinessOverview: React.FC = () => {
 
     return (
         <div className="overview-container animate-fade-in">
+            {myCompanies.length > 0 && (
+                <button className="btn-secondary back-btn" onClick={() => setMode('list')} style={{ marginBottom: '1rem' }}>
+                    ← Back to Listings
+                </button>
+            )}
             <div className="overview-header text-center">
                 <h2>Business Overview</h2>
                 <p className="subtitle">Define your fundamental enterprise structure to begin the M&A prep process.</p>
@@ -390,8 +542,8 @@ const BusinessOverview: React.FC = () => {
                 </div>
 
                 <div className="form-actions">
-                    <button className="btn-primary w-full mt-lg" onClick={handleSave}>
-                        Save Profile & Lock Details
+                    <button className="btn-primary w-full mt-lg" onClick={handleSave} disabled={isSaving}>
+                        {isSaving ? 'Saving Profile...' : 'Save Profile & Lock Details'}
                     </button>
                 </div>
             </div>
