@@ -1,0 +1,152 @@
+/* 
+  EquityArmor - Premium Design System (V2)
+  Base Styles & CSS Variables
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Color Palette - V2 Premium */
+  --bg-dark: #050810;
+  --bg-card: rgba(14, 18, 30, 0.75);
+  --bg-card-hover: rgba(22, 28, 48, 0.9);
+
+  --primary: #00F0FF;
+  --primary-hover: #4DFFFF;
+  --primary-glow: rgba(0, 240, 255, 0.4);
+
+  --secondary: #8B5CF6;
+  /* Royal Violet */
+  --secondary-hover: #A78BFA;
+
+  --accent-gold: #F59E0B;
+  /* Premium Gold */
+  --accent-gold-glow: rgba(245, 158, 11, 0.3);
+
+  --text-main: #F8FAFC;
+  --text-muted: #94A3B8;
+
+  --border-light: rgba(255, 255, 255, 0.12);
+  --border-focus: rgba(0, 240, 255, 0.6);
+
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', 'Inter', sans-serif;
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+
+  /* FX / Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  --shadow-glass: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
+  --shadow-inner: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  --shadow-glow: 0 0 25px var(--primary-glow);
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base Reset & Global Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Richer Background Gradient Mesh */
+  background-image:
+    radial-gradient(circle at 10% 40%, rgba(139, 92, 246, 0.12), transparent 30%),
+    radial-gradient(circle at 90% 20%, rgba(0, 240, 255, 0.08), transparent 25%),
+    radial-gradient(circle at 50% 90%, rgba(245, 158, 11, 0.03), transparent 20%);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  /* Thinner weights for premium editorial feel */
+  line-height: 1.2;
+  margin-bottom: var(--space-sm);
+}
+
+h1 {
+  font-size: 3.5rem;
+  letter-spacing: -0.03em;
+  font-weight: 300;
+}
+
+h2 {
+  font-size: 2.5rem;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+/* Elevated Glassmorphism Card Utility */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-light);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  /* Stronger top highlight */
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-glass), var(--shadow-inner);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
