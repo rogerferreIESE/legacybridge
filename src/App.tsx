@@ -9,6 +9,7 @@ import Marketplace from './components/Marketplace';
 import TheVault from './components/TheVault';
 import LandingPage from './components/LandingPage';
 import AuthModal from './components/AuthModal';
+import Footer from './components/Footer';
 import { supabase } from './lib/supabase';
 
 function App() {
@@ -110,6 +111,9 @@ function App() {
           <LandingPage onGetStarted={() => setIsAuthOpen(true)} />
         )}
       </main>
+
+      {/* Global Footer */}
+      <Footer />
 
       <AuthModal
         isOpen={isAuthOpen}
