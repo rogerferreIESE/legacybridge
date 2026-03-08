@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import AddCompanyForm from './AddCompanyForm';
 import './Marketplace.css';
 
 // Mock Data for the Marketplace listings
@@ -48,9 +50,62 @@ const Marketplace: React.FC = () => {
     const [selectedListing, setSelectedListing] = useState<string | null>(null);
     const [ndaRequested, setNdaRequested] = useState<string[]>([]);
 
+    // Supabase States
+    const [companies, setCompanies] = useState<any[]>(mockListings);
+    const [userRole, setUserRole] = useState<string | null>(null);
+    const [userId, setUserId] = useState<string | null>(null);
+    const [isAddOpen, setIsAddOpen] = useState(false);
+
+    useEffect(() => {
+        fetchCompanies();
+        checkUser();
+
+        // Listen for auth changes to re-check user
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+            checkUser();
+        });
+        return () => subscription.unsubscribe();
+    }, []);
+
+    const checkUser = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+            setUserId(session.user.id);
+            const { data } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
+            if (data) setUserRole(data.role);
+        } else {
+            setUserId(null);
+            setUserRole(null);
+        }
+    };
+
+    const fetchCompanies = async () => {
+        const { data, error } = await supabase.from('companies').select('*').order('created_at', { ascending: false });
+        if (!error && data && data.length > 0) {
+            const formattedData = data.map((dbItem: any) => ({
+                id: dbItem.id,
+                industry: dbItem.industry,
+                region: 'Global',
+                revenue: 'Confidential',
+                ebitda: dbItem.asking_price ? `€${(dbItem.asking_price / 1000000).toFixed(1)}M` : 'N/A',
+                employees: '10+',
+                recurringRev: 'TBD',
+                ownerInvolvement: 'Transition',
+                matchScore: Math.floor(Math.random() * 20) + 80,
+                highlights: [dbItem.description?.substring(0, 50) + '...', 'Verified Listing'],
+                status: 'New',
+                name: dbItem.name
+            }));
+            // Merge live data with mock placeholders
+            setCompanies([...formattedData, ...mockListings]);
+        } else {
+            setCompanies(mockListings);
+        }
+    };
+
     // Detailed View Mode
     if (selectedListing) {
-        const listing = mockListings.find(l => l.id === selectedListing)!;
+        const listing = companies.find((l: any) => l.id === selectedListing)!;
         const hasRequested = ndaRequested.includes(listing.id);
 
         return (
@@ -63,7 +118,7 @@ const Marketplace: React.FC = () => {
                     <div className="detail-header">
                         <div className="company-badge secret-badge">?</div>
                         <div className="detail-title">
-                            <h2>Project {listing.industry.split(' ')[0]} Alpha</h2>
+                            <h2>{listing.name || `Project ${listing.industry.split(' ')[0]} Alpha`}</h2>
                             <span className="industry-tag">{listing.industry}</span>
                             <span className="region-tag">📍 {listing.region}</span>
                         </div>
@@ -94,7 +149,7 @@ const Marketplace: React.FC = () => {
                     <div className="detail-section">
                         <h3>Investment Highlights</h3>
                         <ul className="highlight-list">
-                            {listing.highlights.map((h, i) => (
+                            {listing.highlights.map((h: string, i: number) => (
                                 <li key={i}>✓ {h}</li>
                             ))}
                         </ul>
@@ -125,14 +180,21 @@ const Marketplace: React.FC = () => {
 
     return (
         <div className="marketplace-container animate-fade-in">
-            <div className="marketplace-header">
+            <div className="marketplace-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                 <div>
                     <h2>Deal Marketplace</h2>
                     <p className="subtitle">Discover verified, off-market opportunities fitted to your criteria.</p>
                 </div>
-                <div className="investor-profile-toggle">
-                    <span className="status-indicator online"></span>
-                    Search Fund Profile Active
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+                    <div className="investor-profile-toggle">
+                        <span className="status-indicator online"></span>
+                        {userRole === 'seller' ? 'Seller Profile Active' : 'Search Fund Profile Active'}
+                    </div>
+                    {userRole === 'seller' && (
+                        <button className="btn-primary" onClick={() => setIsAddOpen(true)}>
+                            + List New Company
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -172,7 +234,7 @@ const Marketplace: React.FC = () => {
 
                 {/* Listings Grid */}
                 <div className="listings-grid">
-                    {mockListings.map(listing => (
+                    {companies.map(listing => (
                         <div key={listing.id} className="glass-panel listing-card">
                             <div className="listing-card-header">
                                 <span className="status-badge">{listing.status}</span>
@@ -181,7 +243,7 @@ const Marketplace: React.FC = () => {
                                 </div>
                             </div>
 
-                            <h3 className="listing-title">Confidential {listing.industry}</h3>
+                            <h3 className="listing-title">{listing.name ? `Project ${listing.name}` : `Confidential ${listing.industry}`}</h3>
                             <p className="listing-region">📍 {listing.region}</p>
 
                             <div className="listing-stats">
@@ -207,6 +269,15 @@ const Marketplace: React.FC = () => {
                     ))}
                 </div>
             </div>
+
+            {userId && (
+                <AddCompanyForm
+                    isOpen={isAddOpen}
+                    onClose={() => setIsAddOpen(false)}
+                    onSuccess={fetchCompanies}
+                    userId={userId}
+                />
+            )}
         </div>
     );
 };

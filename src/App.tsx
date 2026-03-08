@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 
 // Feature Views
@@ -9,9 +9,34 @@ import Marketplace from './components/Marketplace';
 import TheVault from './components/TheVault';
 
 import { TestConnection } from './components/TestConnection';
+import AuthModal from './components/AuthModal';
+import { supabase } from './lib/supabase';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'hook' | 'overview' | 'shield' | 'market' | 'vault'>('overview');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [session, setSession] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleTabChange = (tab: 'hook' | 'overview' | 'shield' | 'market' | 'vault') => {
+    setActiveTab(tab);
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <div className="app-container">
@@ -21,41 +46,58 @@ function App() {
           <span className="brand-icon">🌉</span>
           <span className="brand-text">Legacy Bridge</span>
         </div>
-        <div className="nav-links">
+
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {isMobileMenuOpen ? '✕' : '☰'}
+        </button>
+
+        <div className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
           <TestConnection />
           <button
             className={`nav-btn ${activeTab === 'hook' ? 'active' : ''}`}
-            onClick={() => setActiveTab('hook')}
+            onClick={() => handleTabChange('hook')}
           >
             Calculator
           </button>
           <button
             className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
+            onClick={() => handleTabChange('overview')}
           >
             Business Overview
           </button>
           <button
             className={`nav-btn ${activeTab === 'shield' ? 'active' : ''}`}
-            onClick={() => setActiveTab('shield')}
+            onClick={() => handleTabChange('shield')}
           >
             Diagnostic
           </button>
           <button
             className={`nav-btn ${activeTab === 'market' ? 'active' : ''}`}
-            onClick={() => setActiveTab('market')}
+            onClick={() => handleTabChange('market')}
           >
             Marketplace
           </button>
           <button
             className={`nav-btn ${activeTab === 'vault' ? 'active' : ''}`}
-            onClick={() => setActiveTab('vault')}
+            onClick={() => handleTabChange('vault')}
           >
             The Vault
           </button>
         </div>
         <div className="nav-actions">
-          <button className="btn-primary">Connect Wallet / Login</button>
+          {session ? (
+            <button className="btn-secondary" onClick={() => supabase.auth.signOut()}>
+              Sign Out
+            </button>
+          ) : (
+            <button className="btn-primary" onClick={() => setIsAuthOpen(true)}>
+              Login / Sign Up
+            </button>
+          )}
         </div>
       </nav>
 
@@ -69,6 +111,12 @@ function App() {
           {activeTab === 'vault' && <TheVault />}
         </div>
       </main>
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onSuccess={() => setIsAuthOpen(false)}
+      />
     </div>
   );
 }
