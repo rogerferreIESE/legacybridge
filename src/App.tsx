@@ -10,7 +10,7 @@ import TheVault from './components/TheVault';
 import BuyerProfileOnboarding from './components/BuyerProfileOnboarding';
 
 function App() {
-  const [persona, setPersona] = useState<'seller' | 'buyer' | null>(null);
+  const [persona, setPersona] = useState<'seller' | 'buyer' | 'advisor' | null>(null);
   const [activeTab, setActiveTab] = useState<'hook' | 'overview' | 'shield' | 'market' | 'vault'>('overview');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
@@ -22,50 +22,83 @@ function App() {
 
   if (!persona) {
     return (
-      <div className={`app-container ${theme}-theme`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--bg-dark)' }}>
-        <div className="logo-container" style={{ marginBottom: '4rem', transform: 'scale(1.5)' }}>
-          <div className="logo-mark">LB</div>
-          <h1 className="logo-text">LEGACY BRIDGE</h1>
+      <div className={`app-container ${theme}-theme`} style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-dark)' }}>
+
+        {/* Top Nav for Landing */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2rem 4rem', alignItems: 'center' }}>
+          <div className="logo-container">
+            <div className="logo-mark">LB</div>
+            <h1 className="logo-text">LEGACY BRIDGE</h1>
+          </div>
+          <button
+            onClick={toggleTheme}
+            style={{ background: 'transparent', border: '1px solid var(--border)', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text)' }}
+          >
+            {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
+          </button>
         </div>
 
-        <h2 style={{ color: 'var(--text)', marginBottom: '2rem' }}>Welcome to Legacy Bridge</h2>
-        <p style={{ color: 'var(--text-muted)', marginBottom: '3rem' }}>Select your path to continue.</p>
+        {/* Hero Section */}
+        <div style={{ textAlign: 'center', marginTop: '4rem', marginBottom: '4rem', padding: '0 2rem' }}>
+          <h2 style={{ color: 'var(--text)', fontSize: '3.5rem', marginBottom: '1rem', letterSpacing: '-0.02em', fontWeight: 600 }}>Your legacy. Their future.<br />Our mission.</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto', lineHeight: '1.6' }}>
+            The premier small business marketplace. AI-matched opportunities, human-driven outcomes. Connect with verified buyers, sellers, and advisors nationwide.
+          </p>
+        </div>
 
-        <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+        {/* Trust Badges Mock */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '3rem', opacity: 0.6, marginBottom: '5rem', filter: 'grayscale(100%)' }}>
+          <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Forbes</span>
+          <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Bloomberg</span>
+          <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>WSJ</span>
+          <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>TechCrunch</span>
+        </div>
+
+        {/* Action Cards */}
+        <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center', paddingBottom: '6rem' }}>
           <div
             className="glass-panel"
-            style={{ padding: '3rem 2rem', width: '300px', textAlign: 'center', cursor: 'pointer', transition: 'transform 0.2s', border: '1px solid var(--border)' }}
+            style={{ padding: '3rem 2rem', width: '320px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.3s', border: '1px solid var(--border)' }}
             onClick={() => setPersona('seller')}
-            onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-            onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
+            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
           >
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🏢</div>
-            <h3>I am a Business Owner</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Prepare my business for an eventual exit or verify my valuation.</p>
+            <div style={{ fontSize: '3.5rem', marginBottom: '1.5rem' }}>🏢</div>
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Business Owner</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5' }}>Know your worth and protect your legacy. Get a data-backed valuation and find the right buyer.</p>
           </div>
 
           <div
             className="glass-panel"
-            style={{ padding: '3rem 2rem', width: '300px', textAlign: 'center', cursor: 'pointer', transition: 'transform 0.2s', border: '1px solid var(--border)' }}
+            style={{ padding: '3rem 2rem', width: '320px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.3s', border: '1px solid var(--border)' }}
             onClick={() => {
               setPersona('buyer');
-              setActiveTab('overview'); // Use overview slot for buyer profile initially
+              setActiveTab('overview');
             }}
-            onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-            onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
+            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
           >
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💼</div>
-            <h3>I am an Investor / Buyer</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Source verified transition opportunities and specify my investment criteria.</p>
+            <div style={{ fontSize: '3.5rem', marginBottom: '1.5rem' }}>💼</div>
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Investor / Buyer</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5' }}>A modern way to buy. Discover AI-matched, off-market opportunities before they list publicly.</p>
+          </div>
+
+          {/* New Advisor Persona */}
+          <div
+            className="glass-panel"
+            style={{ padding: '3rem 2rem', width: '320px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.3s', border: '1px solid var(--border)' }}
+            onClick={() => {
+              setPersona('advisor');
+              setActiveTab('overview'); // Temp route for mock
+            }}
+            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
+            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+          >
+            <div style={{ fontSize: '3.5rem', marginBottom: '1.5rem' }}>🤝</div>
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>M&A Advisor</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5' }}>Data-driven dealmaking. Manage diligence, find qualified buyers, and streamline your deal flow.</p>
           </div>
         </div>
-
-        <button
-          onClick={toggleTheme}
-          style={{ position: 'absolute', top: '2rem', right: '2rem', background: 'transparent', border: '1px solid var(--border)', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text)' }}
-        >
-          {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
-        </button>
       </div>
     );
   }
@@ -123,16 +156,17 @@ function App() {
             </>
           )}
 
-          {persona === 'seller' && (
+          {persona === 'seller' || persona === 'advisor' ? (
             <button
               className={`nav-btn ${activeTab === 'market' ? 'active' : ''}`}
               onClick={() => setActiveTab('market')}
             >
               Marketplace
             </button>
-          )}
+          ) : null}
         </div>
         <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginRight: '1rem' }}>Logged in as: <strong>{persona === 'advisor' ? 'Advisor' : persona === 'seller' ? 'Seller' : 'Buyer'}</strong></span>
           <button
             onClick={toggleTheme}
             style={{ background: 'transparent', border: '1px solid var(--border)', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
@@ -146,9 +180,9 @@ function App() {
       {/* Main Content Area */}
       <main className="main-content">
         <div className="content-wrapper animate-fade-in">
-          {activeTab === 'overview' && (persona === 'seller' ? <BusinessOverview /> : <BuyerProfileOnboarding />)}
-          {activeTab === 'hook' && persona === 'seller' && <ValuationCalculator />}
-          {activeTab === 'shield' && persona === 'seller' && <LegalDiagnostic />}
+          {activeTab === 'overview' && (persona === 'seller' || persona === 'advisor' ? <BusinessOverview /> : <BuyerProfileOnboarding />)}
+          {activeTab === 'hook' && (persona === 'seller' || persona === 'advisor') && <ValuationCalculator />}
+          {activeTab === 'shield' && (persona === 'seller' || persona === 'advisor') && <LegalDiagnostic />}
           {activeTab === 'market' && <Marketplace />}
           {activeTab === 'vault' && <TheVault />}
         </div>

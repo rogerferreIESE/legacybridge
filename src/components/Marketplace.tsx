@@ -61,6 +61,7 @@ const Marketplace: React.FC = () => {
     const [ndaRequested, setNdaRequested] = useState<string[]>([]);
     const [savedListings, setSavedListings] = useState<string[]>([]);
     const [activeTab, setActiveTab] = useState<'all' | 'saved' | 'notifs'>('all');
+    const [isConfiguringMatch, setIsConfiguringMatch] = useState(false);
 
     const toggleSave = (id: string, e: React.MouseEvent) => {
         e.stopPropagation();
@@ -168,11 +169,53 @@ const Marketplace: React.FC = () => {
                     <h2>Deal Marketplace</h2>
                     <p className="subtitle">Discover verified, off-market opportunities fitted to your criteria.</p>
                 </div>
-                <div className="investor-profile-toggle">
+                <div className="investor-profile-toggle" style={{ cursor: 'pointer' }} onClick={() => setIsConfiguringMatch(!isConfiguringMatch)}>
                     <span className="status-indicator online"></span>
-                    Search Fund Profile Active
+                    AI Match Engine Active (Configure)
                 </div>
             </div>
+
+            {isConfiguringMatch && (
+                <div className="glass-panel animate-fade-in" style={{ marginBottom: '2rem', border: '1px solid var(--primary)', background: 'rgba(111, 66, 193, 0.05)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                        <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span style={{ fontSize: '1.5rem' }}>🎯</span> Edit Target Acquisition Criteria
+                        </h3>
+                        <button className="btn-secondary small" onClick={() => setIsConfiguringMatch(false)}>Close List</button>
+                    </div>
+
+                    <div className="form-grid">
+                        <div className="form-group">
+                            <label>Target Industries</label>
+                            <input type="text" className="text-input" defaultValue="B2B SaaS, Managed IT, Healthcare" />
+                        </div>
+                        <div className="form-group">
+                            <label>EBITDA Range</label>
+                            <select className="select-input" defaultValue="1M-5M">
+                                <option value="0-500K">&lt; $500K</option>
+                                <option value="500K-1M">$500K - $1M</option>
+                                <option value="1M-5M">$1M - $5M</option>
+                                <option value="5M+">$5M+</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Geographic Preference</label>
+                            <input type="text" className="text-input" defaultValue="North America, Western Europe" />
+                        </div>
+                        <div className="form-group">
+                            <label>Min Operator Reliance</label>
+                            <select className="select-input" defaultValue="Moderate">
+                                <option value="Low">Low - Fully Managed</option>
+                                <option value="Moderate">Moderate - Owner active</option>
+                                <option value="High">High - Owner is the business</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style={{ marginTop: '1.5rem', textAlign: 'right' }}>
+                        <button className="btn-primary" onClick={() => { alert('AI matching model retrained with new parameters.'); setIsConfiguringMatch(false); }}>Update AI Model</button>
+                    </div>
+                </div>
+            )}
 
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
                 <button
@@ -236,8 +279,8 @@ const Marketplace: React.FC = () => {
                             <div className="listing-card-header">
                                 <span className="status-badge">{listing.status}</span>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <div className="match-score">
-                                        <span className="score-value">{listing.matchScore}%</span> Fit
+                                    <div className="match-score" style={{ background: 'rgba(0, 240, 255, 0.15)', border: '1px solid var(--accent)', padding: '4px 12px', borderRadius: '12px' }}>
+                                        <span className="score-value" style={{ color: 'var(--accent)', fontWeight: 'bold' }}>{listing.matchScore}%</span> AI Match
                                     </div>
                                     <button
                                         onClick={(e) => toggleSave(listing.id, e)}
@@ -272,7 +315,11 @@ const Marketplace: React.FC = () => {
                                 <span className="attr-tag">{listing.ownerInvolvement} Owner Inv.</span>
                             </div>
 
-                            <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem', fontSize: '0.8rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border)', paddingTop: '0.8rem' }}>
+                            <div style={{ margin: '1rem 0', padding: '0.75rem', background: 'rgba(111, 66, 193, 0.05)', borderLeft: '3px solid var(--primary)', borderRadius: '4px', fontSize: '0.85rem' }}>
+                                <strong style={{ color: 'var(--text)' }}>Why it matches:</strong> Hit your EBITDA target & Industry pref.
+                            </div>
+
+                            <div style={{ marginTop: 'auto', display: 'flex', gap: '1rem', fontSize: '0.8rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border)', paddingTop: '0.8rem' }}>
                                 <span title="Profile Views">👁️ {listing.views} Views</span>
                                 <span title="NDAs Requested">📝 {listing.ndas} NDAs Requested</span>
                             </div>

@@ -160,6 +160,13 @@ const BusinessOverview: React.FC = () => {
                         <span className="status-icon">✓</span>
                         <span>Profile successfully prepared for The Marketplace</span>
                     </div>
+
+                    <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+                        <button className="btn-primary" onClick={() => alert('Downloading Mock Deal CIM...')}>
+                            📄 Download Generated Pitch Deck (CIM)
+                        </button>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>Advisors and verified buyers will receive this doc once NDA is signed.</p>
+                    </div>
                 </div>
             </div>
         );
@@ -174,19 +181,22 @@ const BusinessOverview: React.FC = () => {
 
             <div className="glass-panel overview-form">
 
-                {/* NEW OPTIONAL AUTOL-FILL UPLOAD SECTION */}
                 <div className="form-group full-width" style={{ marginBottom: '2rem', padding: '1.5rem', border: '2px dashed var(--primary)', borderRadius: '12px', background: 'rgba(111, 66, 193, 0.05)', textAlign: 'center' }}>
                     <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📄</div>
-                    <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--text)' }}>Auto-fill with Financial Documents</h3>
+                    <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--text)' }}>Auto-fill & Generate Smart CIM</h3>
                     <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', margin: '0 0 1rem 0' }}>
                         Drag and drop your P&L statement, Balance Sheet, or existing Teaser here.<br />
-                        Our AI will seamlessly extract the data to populate your profile and valuation metrics.
+                        Our AI will extract the data, populate your profile, and automatically generate a beautifully formatted Confidential Information Memorandum (CIM) ready for buyers.
                     </p>
-                    <button className="btn-secondary small">Browse Files</button>
+                    <button className="btn-secondary small" onClick={() => alert('Mock: AI processing documents and generating CIM...')}>Upload & Generate CIM</button>
                     <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1rem' }}>Supports PDF, XLS, CSV (Max 50MB)</p>
                 </div>
 
-                <h3 style={{ fontSize: '1.2rem', margin: '0 0 1rem 0' }}>Manual Entry</h3>
+                <div style={{ display: 'flex', alignItems: 'center', margin: '2rem 0' }}>
+                    <div style={{ flex: 1, height: '1px', background: 'var(--border)' }}></div>
+                    <h3 style={{ fontSize: '1rem', margin: '0 1rem', color: 'var(--text-muted)' }}>OR ENTER MANUALLY</h3>
+                    <div style={{ flex: 1, height: '1px', background: 'var(--border)' }}></div>
+                </div>
 
                 <div className="form-grid">
                     <div className="form-group full-width">
