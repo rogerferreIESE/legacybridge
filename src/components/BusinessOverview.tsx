@@ -21,6 +21,15 @@ interface BusinessProfile {
     exitTimeline: string;
     transactionType: string;
     willingnessToStay: string;
+
+    // Seller Quality Verification (Batch 6)
+    legalCompanyName: string;
+    founderLinkedIn: string;
+    financialsPreparedBy: string;
+    entityType: string;
+
+    // SMB.co Required Fields (Batch 6)
+    askingPrice: string;
 }
 
 const BusinessOverview: React.FC = () => {
@@ -39,7 +48,14 @@ const BusinessOverview: React.FC = () => {
         exitMotivation: '',
         exitTimeline: '',
         transactionType: '',
-        willingnessToStay: ''
+        willingnessToStay: '',
+
+        legalCompanyName: '',
+        founderLinkedIn: '',
+        financialsPreparedBy: '',
+        entityType: '',
+
+        askingPrice: ''
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -52,6 +68,12 @@ const BusinessOverview: React.FC = () => {
             alert('Please fill out the critical fields: Name, Industry, and Description.');
             return;
         }
+
+        if (!profile.founderLinkedIn || !profile.legalCompanyName || !profile.financialsPreparedBy) {
+            alert('To maintain marketplace quality, please complete all Verification & Readiness fields including your LinkedIn profile and entity details.');
+            return;
+        }
+
         setIsEditing(false);
     };
 
@@ -102,6 +124,14 @@ const BusinessOverview: React.FC = () => {
                             <div>
                                 <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Revenue</label>
                                 <p style={{ color: 'var(--text-muted)' }}>See Calculator Tab</p>
+                            </div>
+                            <div>
+                                <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Asking Price</label>
+                                <p style={{ color: 'var(--text-muted)' }}>{profile.askingPrice || 'TBD'}</p>
+                            </div>
+                            <div>
+                                <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Financial Quality</label>
+                                <p style={{ color: 'var(--text-muted)' }}>{profile.financialsPreparedBy || 'Unverified'}</p>
                             </div>
                             <div>
                                 <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Key Products</label>
@@ -190,16 +220,29 @@ const BusinessOverview: React.FC = () => {
                         </select>
                     </div>
 
-                    <div className="form-group">
-                        <label>Year Founded</label>
-                        <input
-                            type="number"
-                            name="foundedYear"
-                            placeholder="e.g. 2018"
-                            value={profile.foundedYear}
-                            onChange={handleChange}
-                            className="text-input"
-                        />
+                    <div className="form-group owner-comp-group full-width">
+                        <div>
+                            <label>Year Founded</label>
+                            <input
+                                type="number"
+                                name="foundedYear"
+                                placeholder="e.g. 2018"
+                                value={profile.foundedYear}
+                                onChange={handleChange}
+                                className="text-input"
+                            />
+                        </div>
+                        <div>
+                            <label>Target Asking Price (Optional)</label>
+                            <input
+                                type="text"
+                                name="askingPrice"
+                                placeholder="e.g. $1,200,000 or TBD"
+                                value={profile.askingPrice}
+                                onChange={handleChange}
+                                className="text-input"
+                            />
+                        </div>
                     </div>
 
                     <div className="form-group full-width">
@@ -332,9 +375,77 @@ const BusinessOverview: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="form-actions">
+                <div className="form-group full-width" style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
+                    <h3 style={{ fontSize: '1.2rem', margin: 0 }}>Verification & Institutional Readiness</h3>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.5rem 0 1rem 0' }}>Legacy Bridge requires verified sellers to ensure high trust for our institutional buyers. This data remains confidential until NDA execution.</p>
+                </div>
+
+                <div className="form-grid">
+                    <div className="form-group">
+                        <label>Legal Entity Name *</label>
+                        <input
+                            type="text"
+                            name="legalCompanyName"
+                            placeholder="e.g. Acme Services LLC"
+                            value={profile.legalCompanyName}
+                            onChange={handleChange}
+                            className="text-input"
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Founder/Owner LinkedIn URL *</label>
+                        <input
+                            type="url"
+                            name="founderLinkedIn"
+                            placeholder="https://linkedin.com/in/owner"
+                            value={profile.founderLinkedIn}
+                            onChange={handleChange}
+                            className="text-input"
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Entity Structure *</label>
+                        <select
+                            name="entityType"
+                            value={profile.entityType}
+                            onChange={handleChange}
+                            className="select-input"
+                        >
+                            <option value="">Select Structure...</option>
+                            <option value="LLC">LLC</option>
+                            <option value="S-Corp">S-Corp</option>
+                            <option value="C-Corp">C-Corp</option>
+                            <option value="Sole Proprietorship">Sole Proprietorship / Partnership</option>
+                        </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Current Financial Preparation *</label>
+                        <select
+                            name="financialsPreparedBy"
+                            value={profile.financialsPreparedBy}
+                            onChange={handleChange}
+                            className="select-input"
+                        >
+                            <option value="">Select Reporting Quality...</option>
+                            <option value="Audited Financials (Third Party)">Audited Financials (Third Party)</option>
+                            <option value="Quality of Earnings (QoE) Complete">Quality of Earnings (QoE) Complete</option>
+                            <option value="Outsourced CPA / Fractional CFO">Outsourced CPA / Fractional CFO</option>
+                            <option value="Internal Bookkeeper / Quickbooks">Internal Bookkeeper / Quickbooks</option>
+                            <option value="Tax Returns Only">Tax Returns Only</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div className="form-actions" style={{ marginTop: '2rem' }}>
+                    <div style={{ padding: '1rem', background: 'rgba(111, 66, 193, 0.05)', border: '1px dashed var(--primary)', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'center' }}>
+                        🔒 Your identity and full business details are protected. Investors only see an anonymized summary until both parties sign an NDA.
+                    </div>
                     <button className="btn-primary w-full mt-lg" onClick={handleSave}>
-                        Save Profile & Lock Details
+                        Verify & Create Data Room
                     </button>
                 </div>
             </div>

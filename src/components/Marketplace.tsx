@@ -16,7 +16,9 @@ const mockListings = [
         highlights: ['High Growth', 'Low Churn', 'Proprietary Tech'],
         status: 'Active',
         views: 142,
-        ndas: 12
+        ndas: 12,
+        foundingYear: 2012,
+        askingPrice: '€12.5M'
     },
     {
         id: '2',
@@ -31,7 +33,9 @@ const mockListings = [
         highlights: ['Established Brand', 'High Margins', 'Retiring Owner'],
         status: 'Active',
         views: 89,
-        ndas: 4
+        ndas: 4,
+        foundingYear: 1998,
+        askingPrice: '€9.0M'
     },
     {
         id: '3',
@@ -46,7 +50,9 @@ const mockListings = [
         highlights: ['Fully Delegated Ops', 'Scalable Platform'],
         status: 'New',
         views: 312,
-        ndas: 45
+        ndas: 45,
+        foundingYear: 2018,
+        askingPrice: '€5.5M'
     }
 ];
 
@@ -78,7 +84,7 @@ const Marketplace: React.FC = () => {
                         <div className="detail-title">
                             <h2>Project {listing.industry.split(' ')[0]} Alpha</h2>
                             <span className="industry-tag">{listing.industry}</span>
-                            <span className="region-tag">📍 {listing.region}</span>
+                            <span className="region-tag" style={{ marginLeft: '0.5rem' }}>📍 {listing.region} • Est. {listing.foundingYear}</span>
                         </div>
                         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                             <div className="match-score-large">
@@ -94,6 +100,10 @@ const Marketplace: React.FC = () => {
                     </div>
 
                     <div className="metrics-grid">
+                        <div className="metric-box" style={{ background: 'rgba(111, 66, 193, 0.1)', border: '1px solid var(--primary)' }}>
+                            <label style={{ color: 'var(--primary)' }}>Asking Price</label>
+                            <p style={{ color: 'var(--text)', fontWeight: 700 }}>{listing.askingPrice}</p>
+                        </div>
                         <div className="metric-box">
                             <label>Revenue</label>
                             <p>{listing.revenue}</p>
@@ -240,16 +250,20 @@ const Marketplace: React.FC = () => {
                             </div>
 
                             <h3 className="listing-title">Confidential {listing.industry}</h3>
-                            <p className="listing-region">📍 {listing.region}</p>
+                            <p className="listing-region">📍 {listing.region} • Est. {listing.foundingYear}</p>
 
-                            <div className="listing-stats">
+                            <div className="listing-stats" style={{ gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem' }}>
+                                <div className="stat" style={{ background: 'rgba(111, 66, 193, 0.1)', borderRadius: '4px', padding: '0.5rem' }}>
+                                    <span className="stat-label" style={{ color: 'var(--primary)' }}>Asking Price</span>
+                                    <span className="stat-val" style={{ color: 'var(--text)', fontSize: '0.9rem' }}>{listing.askingPrice}</span>
+                                </div>
                                 <div className="stat">
                                     <span className="stat-label">Rev</span>
-                                    <span className="stat-val">{listing.revenue}</span>
+                                    <span className="stat-val" style={{ fontSize: '0.9rem' }}>{listing.revenue}</span>
                                 </div>
                                 <div className="stat">
                                     <span className="stat-label">EBITDA</span>
-                                    <span className="stat-val">{listing.ebitda}</span>
+                                    <span className="stat-val" style={{ fontSize: '0.9rem' }}>{listing.ebitda}</span>
                                 </div>
                             </div>
 
