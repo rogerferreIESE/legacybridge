@@ -108,9 +108,9 @@ function App() {
     <div className={`app-container ${theme}-theme`}>
       {/* Navigation */}
       <nav className="navbar glass-panel">
-        <div className="nav-brand">
-          <span className="brand-icon">🌉</span>
-          <span className="brand-text">Legacy Bridge</span>
+        <div className="nav-logo-container" onClick={() => setPersona(null)} style={{ cursor: 'pointer' }}>
+          <div className="nav-logo-mark">LB</div>
+          <h1 className="nav-logo-text">LEGACY BRIDGE</h1>
         </div>
         <div className="nav-links">
           {persona === 'seller' ? (
@@ -131,7 +131,7 @@ function App() {
                 className={`nav-btn ${activeTab === 'shield' ? 'active' : ''}`}
                 onClick={() => setActiveTab('shield')}
               >
-                Diagnostic
+                Legal Diagnostic
               </button>
             </>
           ) : persona === 'buyer' ? (
