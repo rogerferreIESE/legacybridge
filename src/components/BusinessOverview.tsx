@@ -213,20 +213,17 @@ const BusinessOverview: React.FC = () => {
 
                     <div className="form-group">
                         <label>Primary Industry/Sector *</label>
-                        <select
-                            name="industry"
-                            value={profile.industry}
-                            onChange={handleChange}
-                            className="select-input"
-                        >
-                            <option value="">Select Industry...</option>
+                        <select className="select-input" name="industry" value={profile.industry} onChange={handleChange} required>
+                            <option value="">Select Industry</option>
                             <option value="B2B SaaS">B2B SaaS</option>
-                            <option value="FinTech">FinTech</option>
                             <option value="HealthTech">HealthTech</option>
-                            <option value="E-Commerce">E-Commerce</option>
-                            <option value="Marketplace">Marketplace</option>
-                            <option value="Enterprise Software">Enterprise Software</option>
-                            <option value="Other">Other Category</option>
+                            <option value="FinTech">FinTech</option>
+                            <option value="Manufacturing">Manufacturing / Industrial</option>
+                            <option value="Retail">Retail / E-commerce</option>
+                            <option value="Construction">Construction / Trades</option>
+                            <option value="Logistics">Logistics / Supply Chain</option>
+                            <option value="Managed IT Services">Managed IT (MSP)</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
 

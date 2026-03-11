@@ -8,6 +8,7 @@ import BusinessOverview from './components/BusinessOverview';
 import Marketplace from './components/Marketplace';
 import TheVault from './components/TheVault';
 import BuyerProfileOnboarding from './components/BuyerProfileOnboarding';
+import ProviderDashboard from './components/ProviderDashboard';
 
 function App() {
   const [persona, setPersona] = useState<'seller' | 'buyer' | 'advisor' | null>(null);
@@ -83,20 +84,20 @@ function App() {
             <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5' }}>A modern way to buy. Discover AI-matched, off-market opportunities before they list publicly.</p>
           </div>
 
-          {/* New Advisor Persona */}
+          {/* New Provider Persona */}
           <div
             className="glass-panel"
             style={{ padding: '3rem 2rem', width: '320px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.3s', border: '1px solid var(--border)' }}
             onClick={() => {
               setPersona('advisor');
-              setActiveTab('overview'); // Temp route for mock
+              setActiveTab('overview');
             }}
             onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
             onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
           >
-            <div style={{ fontSize: '3.5rem', marginBottom: '1.5rem' }}>🤝</div>
-            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>M&A Advisor</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5' }}>Data-driven dealmaking. Manage diligence, find qualified buyers, and streamline your deal flow.</p>
+            <div style={{ fontSize: '3.5rem', marginBottom: '1.5rem' }}>⚖️</div>
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Service Provider</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5' }}>Law firms & CPAs. Manage client diligence, list QofE services, and accelerate deal flow for sellers.</p>
           </div>
         </div>
       </div>
@@ -133,7 +134,7 @@ function App() {
                 Diagnostic
               </button>
             </>
-          ) : (
+          ) : persona === 'buyer' ? (
             <>
               <button
                 className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
@@ -154,9 +155,18 @@ function App() {
                 The Vault
               </button>
             </>
+          ) : (
+            <>
+              <button
+                className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
+                onClick={() => setActiveTab('overview')}
+              >
+                Provider Dashboard
+              </button>
+            </>
           )}
 
-          {persona === 'seller' || persona === 'advisor' ? (
+          {persona === 'seller' ? (
             <button
               className={`nav-btn ${activeTab === 'market' ? 'active' : ''}`}
               onClick={() => setActiveTab('market')}
@@ -166,7 +176,7 @@ function App() {
           ) : null}
         </div>
         <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginRight: '1rem' }}>Logged in as: <strong>{persona === 'advisor' ? 'Advisor' : persona === 'seller' ? 'Seller' : 'Buyer'}</strong></span>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginRight: '1rem' }}>Logged in as: <strong>{persona === 'advisor' ? 'Provider' : persona === 'seller' ? 'Seller' : 'Buyer'}</strong></span>
           <button
             onClick={toggleTheme}
             style={{ background: 'transparent', border: '1px solid var(--border)', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
@@ -180,11 +190,13 @@ function App() {
       {/* Main Content Area */}
       <main className="main-content">
         <div className="content-wrapper animate-fade-in">
-          {activeTab === 'overview' && (persona === 'seller' || persona === 'advisor' ? <BusinessOverview /> : <BuyerProfileOnboarding />)}
-          {activeTab === 'hook' && (persona === 'seller' || persona === 'advisor') && <ValuationCalculator />}
-          {activeTab === 'shield' && (persona === 'seller' || persona === 'advisor') && <LegalDiagnostic />}
-          {activeTab === 'market' && <Marketplace />}
-          {activeTab === 'vault' && <TheVault />}
+          {activeTab === 'overview' && persona === 'seller' && <BusinessOverview />}
+          {activeTab === 'overview' && persona === 'buyer' && <BuyerProfileOnboarding />}
+          {activeTab === 'overview' && persona === 'advisor' && <ProviderDashboard />}
+          {activeTab === 'hook' && persona === 'seller' && <ValuationCalculator />}
+          {activeTab === 'shield' && persona === 'seller' && <LegalDiagnostic />}
+          {activeTab === 'market' && (persona === 'seller' || persona === 'buyer') && <Marketplace />}
+          {activeTab === 'vault' && persona === 'buyer' && <TheVault />}
         </div>
       </main>
     </div>

@@ -67,12 +67,37 @@ const allQuestions: Question[] = [
         industryFilter: ['FinTech']
     },
     {
+        id: 'q5_mfg',
+        category: 'Manufacturing & Environmental',
+        text: 'Are you in full compliance with EPA / OSHA regulations, with no pending environmental liabilities or hazardous waste citations?',
+        type: 'boolean',
+        riskWeight: 5,
+        industryFilter: ['Manufacturing']
+    },
+    {
+        id: 'q5_retail',
+        category: 'Retail & Real Estate',
+        text: 'Are all commercial leases for your storefronts valid through the next 36 months without impending balloon renegotiations?',
+        type: 'boolean',
+        riskWeight: 4,
+        industryFilter: ['Retail']
+    },
+    {
         id: 'q6',
         category: 'Open Source',
         text: 'Are you aware of any "Copyleft" (e.g., GPL) open-source licenses integrated directly into your proprietary, distributed codebase?',
         type: 'multiple',
         options: ['No Copyleft Code', 'Yes, but strictly isolated', 'Unsure / Not Audited'],
-        riskWeight: 4
+        riskWeight: 4,
+        industryFilter: ['SaaS / Tech', 'HealthTech', 'FinTech']
+    },
+    {
+        id: 'q6_mfg',
+        category: 'Supply Chain Contracts',
+        text: 'Do you have secondary or backup suppliers contracted for all critical raw materials (i.e., avoiding single-point-of-failure concentration)?',
+        type: 'boolean',
+        riskWeight: 4,
+        industryFilter: ['Manufacturing', 'Retail']
     },
     {
         id: 'q7',
@@ -147,7 +172,10 @@ const LegalDiagnostic: React.FC = () => {
             if (answers['q5_health'] === false) risk += 30; // HIPAA violation
             if (answers['q5_saas'] === 'No') risk += 15; // SOC2 missing
             if (answers['q5_fintech'] === false) risk += 30; // PCI violation
+            if (answers['q5_mfg'] === false) risk += 30; // EPA violation
+            if (answers['q5_retail'] === false) risk += 15; // Commercial lease risk
             if (answers['q6'] === 'Unsure / Not Audited') risk += 20;
+            if (answers['q6_mfg'] === false) risk += 20; // Supply chain risk
             if (answers['q7'] === true) risk += 25; // High risk: Data breach
             if (answers['q8'] === 'No / Unsure') risk += 15; // Moderate: Sales tax exposure
             if (answers['q8'] === 'Mostly/Working on it') risk += 5;
@@ -222,10 +250,14 @@ const LegalDiagnostic: React.FC = () => {
                             {answers['q4'] === 'Yes, 100%' && <li className="finding-good">✓ Perfect IP Assignment chain validated.</li>}
                             {answers['q1'] === true && <li className="finding-good">✓ Clean capitalization table structure.</li>}
                             {answers['q9'] === true && <li className="finding-good">✓ Approved 409A valuation protects against equity penalties.</li>}
+                            {answers['q5_mfg'] === true && <li className="finding-good">✓ Environmental and OSHA compliance validated.</li>}
+                            {answers['q5_retail'] === true && <li className="finding-good">✓ Secure commercial real estate footprint.</li>}
 
                             {riskScore > 0 && <li className="finding-flag">⚠️ Missing documentation for legacy contractor agreements.</li>}
                             {answers['q2'] === true && <li className="finding-flag">⚠️ Change of Control clauses identified in top contracts. Require preemptive waivers before LOI.</li>}
                             {answers['q6'] === 'Unsure / Not Audited' && <li className="finding-flag">⚠️ Open Source audit highly recommended before proceeding.</li>}
+                            {answers['q6_mfg'] === false && <li className="finding-flag">⚠️ Supply Chain concentration risk: Secure backup vendors prior to marketing.</li>}
+                            {answers['q5_mfg'] === false && <li className="finding-flag">⚠️ Potential environmental liabilities or hazardous waste citations. Deal-breaker material.</li>}
                             {answers['q7'] === true && <li className="finding-flag">⚠️ Historical data breach flagged. Prepare detailed incident response documentation.</li>}
                             {answers['q9'] === false && <li className="finding-flag">⚠️ Potential Section 409A equity valuation issues. Remedy immediately before diligence.</li>}
                             {answers['q10'] === true && <li className="finding-flag">⚠️ Unauthorized AI training data usage is a critical IP risk for buyers.</li>}
@@ -258,8 +290,8 @@ const LegalDiagnostic: React.FC = () => {
                     <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
                         Our AI adjusts the diagnostic parameters based on specific institutional buyer criteria for your sector.
                     </p>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px', margin: '0 auto' }}>
-                        {['SaaS / Tech', 'HealthTech', 'FinTech', 'General / Other'].map(ind => (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', maxWidth: '600px', margin: '0 auto' }}>
+                        {['SaaS / Tech', 'HealthTech', 'FinTech', 'Manufacturing', 'Retail', 'General / Other'].map(ind => (
                             <button
                                 key={ind}
                                 className="btn-secondary"
