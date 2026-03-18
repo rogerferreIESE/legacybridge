@@ -208,3 +208,72 @@
 .content-wrapper {
   width: 100%;
 }
+
+/* Hamburger Menu Responsive Styles */
+.mobile-menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-main);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 0.75rem 1.25rem;
+    flex-wrap: wrap; 
+  }
+  
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  .nav-content {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-light);
+    margin-top: 0.5rem;
+    gap: 1rem;
+  }
+  
+  .nav-content.open {
+    display: flex;
+  }
+  
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+  }
+  
+  .nav-btn {
+    width: 100%;
+    text-align: left;
+    padding: 12px;
+  }
+  
+  .nav-actions {
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-start;
+  }
+  
+  .nav-actions .btn-secondary,
+  .nav-actions .btn-primary,
+  .nav-actions .btn-gold {
+    width: 100%;
+    text-align: center;
+  }
+}

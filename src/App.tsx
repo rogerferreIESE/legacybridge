@@ -72,7 +72,7 @@ function App() {
             </button>
             {session ? (
               <button
-                onClick={() => supabase.auth.signOut()}
+                onClick={async () => { await supabase.auth.signOut(); setIsMobileMenuOpen(false); }}
                 style={{ background: 'transparent', border: '1px solid var(--border)', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text)' }}>
                 Sign Out
               </button>
@@ -161,31 +161,33 @@ function App() {
     <div className={`app-container ${theme}-theme`}>
       {/* Navigation */}
       <nav className="navbar glass-panel">
-        <div className="nav-logo-container" onClick={() => setPersona(null)} style={{ cursor: 'pointer' }}>
+        <div className="nav-logo-container" onClick={() => { setPersona(null); setIsMobileMenuOpen(false); }} style={{ cursor: 'pointer' }}>
           <svg width="24" height="12" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '2px' }}>
             <path d="M6 24 C 6 12, 22 12, 22 24 L 16 24 C 16 16, 12 16, 12 24 Z" fill="currentColor" />
             <path d="M22 24 C 22 12, 38 12, 38 24 L 32 24 C 32 16, 28 16, 28 24 Z" fill="currentColor" opacity="0.6" />
           </svg>
           <h1 className="nav-logo-text">LEGACY BRIDGE</h1>
         </div>
+        <button className="mobile-menu-toggle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Toggle mobile menu">{isMobileMenuOpen ? "✕" : "☰"}</button>
+        <div className={`nav-content ${isMobileMenuOpen ? "open" : ""}`}>
         <div className="nav-links">
           {persona === 'seller' ? (
             <>
               <button
                 className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
-                onClick={() => setActiveTab('overview')}
+                onClick={() => { setActiveTab('overview'); setIsMobileMenuOpen(false); }}
               >
                 Business Overview
               </button>
               <button
                 className={`nav-btn ${activeTab === 'hook' ? 'active' : ''}`}
-                onClick={() => setActiveTab('hook')}
+                onClick={() => { setActiveTab('hook'); setIsMobileMenuOpen(false); }}
               >
                 Calculator
               </button>
               <button
                 className={`nav-btn ${activeTab === 'shield' ? 'active' : ''}`}
-                onClick={() => setActiveTab('shield')}
+                onClick={() => { setActiveTab('shield'); setIsMobileMenuOpen(false); }}
               >
                 Legal Diagnostic
               </button>
@@ -194,19 +196,19 @@ function App() {
             <>
               <button
                 className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
-                onClick={() => setActiveTab('overview')}
+                onClick={() => { setActiveTab('overview'); setIsMobileMenuOpen(false); }}
               >
                 Investor Profile
               </button>
               <button
                 className={`nav-btn ${activeTab === 'market' ? 'active' : ''}`}
-                onClick={() => setActiveTab('market')}
+                onClick={() => { setActiveTab('market'); setIsMobileMenuOpen(false); }}
               >
                 Marketplace
               </button>
               <button
                 className={`nav-btn ${activeTab === 'vault' ? 'active' : ''}`}
-                onClick={() => setActiveTab('vault')}
+                onClick={() => { setActiveTab('vault'); setIsMobileMenuOpen(false); }}
               >
                 The Vault
               </button>
@@ -216,7 +218,7 @@ function App() {
           {persona === 'seller' ? (
             <button
               className={`nav-btn ${activeTab === 'market' ? 'active' : ''}`}
-              onClick={() => setActiveTab('market')}
+              onClick={() => { setActiveTab('market'); setIsMobileMenuOpen(false); }}
             >
               Marketplace
             </button>
@@ -230,10 +232,11 @@ function App() {
           >
             {theme === 'dark' ? '☀️ Mode' : '🌙 Mode'}
           </button>
-          <button className="btn-primary" onClick={() => setPersona(null)} style={{ background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)' }}>Home</button>
+          <button className="btn-primary" onClick={() => { setPersona(null); setIsMobileMenuOpen(false); }} style={{ background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)' }}>Home</button>
           {session ? (
-            <button className="btn-secondary" onClick={() => supabase.auth.signOut()}>Sign Out</button>
+            <button className="btn-secondary" onClick={async () => { await supabase.auth.signOut(); setIsMobileMenuOpen(false); }}>Sign Out</button>
           ) : null}
+        </div>
         </div>
       </nav>
 
