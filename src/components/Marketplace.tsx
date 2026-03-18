@@ -101,7 +101,7 @@ const Marketplace: React.FC = () => {
                     </div>
 
                     <div className="metrics-grid">
-                        <div className="metric-box" style={{ background: 'rgba(111, 66, 193, 0.1)', border: '1px solid var(--primary)' }}>
+                        <div className="metric-box" style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--primary)' }}>
                             <label style={{ color: 'var(--primary)' }}>Asking Price</label>
                             <p style={{ color: 'var(--text)', fontWeight: 700 }}>{listing.askingPrice}</p>
                         </div>
@@ -176,7 +176,7 @@ const Marketplace: React.FC = () => {
             </div>
 
             {isConfiguringMatch && (
-                <div className="glass-panel animate-fade-in" style={{ marginBottom: '2rem', border: '1px solid var(--primary)', background: 'rgba(111, 66, 193, 0.05)' }}>
+                <div className="glass-panel animate-fade-in" style={{ marginBottom: '2rem', border: '1px solid var(--primary)', background: 'rgba(255, 255, 255, 0.02)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                         <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             <span style={{ fontSize: '1.5rem' }}>🎯</span> Edit Target Acquisition Criteria
@@ -279,7 +279,7 @@ const Marketplace: React.FC = () => {
                             <div className="listing-card-header">
                                 <span className="status-badge">{listing.status}</span>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <div className="match-score" style={{ background: 'rgba(0, 240, 255, 0.15)', border: '1px solid var(--accent)', padding: '4px 12px', borderRadius: '12px' }}>
+                                    <div className="match-score" style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid var(--accent)', padding: '4px 12px', borderRadius: '12px' }}>
                                         <span className="score-value" style={{ color: 'var(--accent)', fontWeight: 'bold' }}>{listing.matchScore}%</span> AI Match
                                     </div>
                                     <button
@@ -296,7 +296,7 @@ const Marketplace: React.FC = () => {
                             <p className="listing-region">📍 {listing.region} • Est. {listing.foundingYear}</p>
 
                             <div className="listing-stats" style={{ gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem' }}>
-                                <div className="stat" style={{ background: 'rgba(111, 66, 193, 0.1)', borderRadius: '4px', padding: '0.5rem' }}>
+                                <div className="stat" style={{ background: 'rgba(255, 255, 255, 0.02)', borderRadius: '4px', padding: '0.5rem' }}>
                                     <span className="stat-label" style={{ color: 'var(--primary)' }}>Asking Price</span>
                                     <span className="stat-val" style={{ color: 'var(--text)', fontSize: '0.9rem' }}>{listing.askingPrice}</span>
                                 </div>
@@ -315,7 +315,7 @@ const Marketplace: React.FC = () => {
                                 <span className="attr-tag">{listing.ownerInvolvement} Owner Inv.</span>
                             </div>
 
-                            <div style={{ margin: '1rem 0', padding: '0.75rem', background: 'rgba(111, 66, 193, 0.05)', borderLeft: '3px solid var(--primary)', borderRadius: '4px', fontSize: '0.85rem' }}>
+                            <div style={{ margin: '1rem 0', padding: '0.75rem', background: 'rgba(255, 255, 255, 0.02)', borderLeft: '3px solid var(--primary)', borderRadius: '4px', fontSize: '0.85rem' }}>
                                 <strong style={{ color: 'var(--text)' }}>Why it matches:</strong> Hit your EBITDA target & Industry pref.
                             </div>
 

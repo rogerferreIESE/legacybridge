@@ -293,7 +293,7 @@ const BuyerProfileOnboarding: React.FC = () => {
                 </div>
 
                 <div className="form-actions" style={{ marginTop: '2rem' }}>
-                    <div style={{ padding: '1rem', background: 'rgba(111, 66, 193, 0.05)', border: '1px dashed var(--primary)', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'center' }}>
+                    <div style={{ padding: '1rem', background: 'rgba(255, 255, 255, 0.02)', border: '1px dashed var(--primary)', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'center' }}>
                         🔒 By submitting this profile, you agree to the Legacy Bridge strict confidentiality and NDA terms for all reviewed listings.
                     </div>
                     <button className="btn-primary w-full mt-lg" onClick={handleSave}>

@@ -286,7 +286,7 @@ const BusinessOverview: React.FC = () => {
                         <h4 style={{ marginBottom: '1rem', color: 'var(--text)' }}>AI Confidence Indicators</h4>
                         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                             {indicators.map((ind, idx) => (
-                                <div key={idx} style={{ background: 'rgba(111, 66, 193, 0.1)', border: '1px solid var(--primary)', borderRadius: '20px', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem' }}>
+                                <div key={idx} style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--primary)', borderRadius: '20px', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem' }}>
                                     <span>{ind.icon}</span>
                                     <span>{ind.text}</span>
                                 </div>

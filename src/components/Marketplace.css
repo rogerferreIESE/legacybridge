@@ -84,7 +84,7 @@
 .listing-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-    border-color: rgba(111, 66, 193, 0.5);
+    border-color: rgba(255, 255, 255, 0.02);
 }
 
 .listing-card-header {
@@ -94,7 +94,7 @@
 }
 
 .status-badge {
-    background: rgba(111, 66, 193, 0.15);
+    background: rgba(255, 255, 255, 0.05);
     color: var(--primary-light);
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
@@ -258,7 +258,7 @@
 }
 
 .highlight-list li {
-    background: rgba(111, 66, 193, 0.1);
+    background: rgba(255, 255, 255, 0.02);
     padding: 1rem;
     border-radius: 8px;
     color: var(--primary-light);

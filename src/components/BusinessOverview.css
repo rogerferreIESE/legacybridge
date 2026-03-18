@@ -55,7 +55,7 @@
     outline: none;
     border-color: var(--primary);
     background: rgba(18, 18, 20, 0.8);
-    box-shadow: 0 0 0 2px rgba(111, 66, 193, 0.2);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.02);
 }
 
 .textarea-input {
@@ -95,25 +95,25 @@
     font-size: 2rem;
     font-weight: 700;
     color: white;
-    box-shadow: 0 8px 16px rgba(111, 66, 193, 0.3);
+    box-shadow: 0 8px 16px rgba(255, 255, 255, 0.02);
 }
 
 .company-name {
     font-size: 2rem;
     margin: 0 0 0.25rem 0;
     background: linear-gradient(to right, #ffffff, #a0aec0);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    
+    
 }
 
 .industry-tag {
-    background: rgba(111, 66, 193, 0.15);
+    background: rgba(255, 255, 255, 0.05);
     color: var(--primary-light);
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.875rem;
     font-weight: 500;
-    border: 1px solid rgba(111, 66, 193, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.02);
 }
 
 .edit-btn {

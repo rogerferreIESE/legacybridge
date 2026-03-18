@@ -86,7 +86,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--primary);
-    text-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
 .description {
@@ -148,7 +148,7 @@
 /* Unlocked Info / Rich Data Dashboard */
 .unlocked-info {
     padding: var(--space-xl);
-    background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.05), transparent 70%);
+    background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.05), transparent 70%);
 }
 
 .identity-reveal-section {
@@ -305,11 +305,11 @@
 }
 
 .rev-bar {
-    background: linear-gradient(180deg, var(--secondary) 0%, rgba(139, 92, 246, 0.2) 100%);
+    background: linear-gradient(180deg, var(--secondary) 0%, rgba(255, 255, 255, 0.05) 100%);
 }
 
 .ebitda-bar {
-    background: linear-gradient(180deg, var(--primary) 0%, rgba(0, 240, 255, 0.2) 100%);
+    background: linear-gradient(180deg, var(--primary) 0%, rgba(255, 255, 255, 0.05) 100%);
 }
 
 .h-10 {
@@ -556,9 +556,9 @@
 }
 
 .roadmap-step.active .step-circle {
-    background: rgba(111, 66, 193, 0.2);
+    background: rgba(255, 255, 255, 0.02);
     border-color: var(--primary);
-    box-shadow: 0 0 10px rgba(111, 66, 193, 0.3);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.02);
 }
 
 .roadmap-line {
@@ -640,7 +640,7 @@
 }
 
 .qna-message.ai-draft {
-    background: rgba(111, 66, 193, 0.1);
+    background: rgba(255, 255, 255, 0.02);
     border: 1px dashed var(--primary);
     align-self: flex-end;
     max-width: 80%;

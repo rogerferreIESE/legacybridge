@@ -57,7 +57,10 @@ function App() {
         {/* Top Nav for Landing */}
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2rem 4rem', alignItems: 'center' }}>
           <div className="logo-container">
-            <div className="logo-mark">LB</div>
+            <svg width="48" height="24" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px' }}>
+              <path d="M6 24 C 6 12, 22 12, 22 24 L 16 24 C 16 16, 12 16, 12 24 Z" fill="#FFFFFF" />
+              <path d="M22 24 C 22 12, 38 12, 38 24 L 32 24 C 32 16, 28 16, 28 24 Z" fill="#A0A0A0" opacity="0.9" />
+            </svg>
             <h1 className="logo-text">LEGACY BRIDGE</h1>
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>

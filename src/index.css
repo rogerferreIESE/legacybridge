@@ -6,28 +6,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Color Palette - V2 Premium */
-  --bg-dark: #050810;
-  --bg-card: rgba(14, 18, 30, 0.75);
-  --bg-card-hover: rgba(22, 28, 48, 0.9);
+  /* Color Palette - V2 Premium Elegant Gray */
+  --bg-dark: #0A0A0C;
+  --bg-card: rgba(22, 22, 24, 0.75);
+  --bg-card-hover: rgba(30, 30, 34, 0.9);
 
-  --primary: #00F0FF;
-  --primary-hover: #4DFFFF;
-  --primary-glow: rgba(0, 240, 255, 0.4);
+  --primary: #E5E7EB;
+  --primary-hover: #FFFFFF;
+  --primary-glow: rgba(255, 255, 255, 0.15);
 
-  --secondary: #8B5CF6;
-  /* Royal Violet */
-  --secondary-hover: #A78BFA;
+  --secondary: #9CA3AF;
+  --secondary-hover: #D1D5DB;
 
-  --accent-gold: #F59E0B;
-  /* Premium Gold */
-  --accent-gold-glow: rgba(245, 158, 11, 0.3);
+  --accent-gold: #6B7280;
+  --accent-gold-glow: rgba(107, 114, 128, 0.3);
 
-  --text-main: #F8FAFC;
-  --text-muted: #94A3B8;
+  --text-main: #F3F4F6;
+  --text-muted: #9CA3AF;
 
-  --border-light: rgba(255, 255, 255, 0.12);
-  --border-focus: rgba(0, 240, 255, 0.6);
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(255, 255, 255, 0.4);
 
   --success: #10B981;
   --warning: #F59E0B;
@@ -83,11 +81,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* Richer Background Gradient Mesh */
+  /* Richer Background Gradient Mesh - Elegant Gray */
   background-image:
-    radial-gradient(circle at 10% 40%, rgba(139, 92, 246, 0.12), transparent 30%),
-    radial-gradient(circle at 90% 20%, rgba(0, 240, 255, 0.08), transparent 25%),
-    radial-gradient(circle at 50% 90%, rgba(245, 158, 11, 0.03), transparent 20%);
+    radial-gradient(circle at 10% 40%, rgba(255, 255, 255, 0.03), transparent 30%),
+    radial-gradient(circle at 90% 20%, rgba(255, 255, 255, 0.02), transparent 25%),
+    radial-gradient(circle at 50% 90%, rgba(255, 255, 255, 0.01), transparent 20%);
 }
 
 h1,

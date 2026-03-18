@@ -108,8 +108,8 @@
 }
 
 .role-btn.active {
-    background: rgba(139, 92, 246, 0.2);
-    border-color: rgba(139, 92, 246, 0.5);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.05);
     color: #fff;
 }
 
