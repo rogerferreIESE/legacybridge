@@ -5,7 +5,7 @@ import './AuthModal.css';
 interface AuthModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSuccess: () => void;
+    onSuccess: (role?: 'buyer' | 'seller') => void;
     defaultRole?: 'buyer' | 'seller';
 }
 
@@ -37,8 +37,11 @@ export default function AuthModal({ isOpen, onClose, onSuccess, defaultRole = 'b
 
         try {
             if (isLogin) {
-                const { error } = await supabase.auth.signInWithPassword({ email, password });
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) throw error;
+
+                const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).single();
+                onSuccess(profile?.role);
             } else {
                 // Sign up flow
                 const { data, error: signUpError } = await supabase.auth.signUp({
@@ -62,9 +65,10 @@ export default function AuthModal({ isOpen, onClose, onSuccess, defaultRole = 'b
 
                     if (profileError) throw profileError;
                 }
+
+                onSuccess(role);
             }
 
-            onSuccess();
             onClose();
         } catch (err: any) {
             setErrorMsg(err.message || 'An error occurred during authentication.');

@@ -246,8 +246,12 @@ function App() {
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
-        onSuccess={() => {
+        onSuccess={(role) => {
           setIsAuthOpen(false);
+          if (role) {
+            setPersona(role);
+            setActiveTab('overview');
+          }
         }}
         defaultRole={authRolePending}
       />
