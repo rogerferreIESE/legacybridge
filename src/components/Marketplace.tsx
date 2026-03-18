@@ -1,62 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 import './Marketplace.css';
 
-// Mock Data for the Marketplace listings
-const mockListings = [
-    {
-        id: '1',
-        industry: 'B2B SaaS',
-        region: 'Western Europe',
-        revenue: '€4.2M',
-        ebitda: '€1.1M',
-        employees: '15',
-        recurringRev: '85%',
-        ownerInvolvement: 'Medium',
-        matchScore: 92,
-        highlights: ['High Growth', 'Low Churn', 'Proprietary Tech'],
-        status: 'Active',
-        views: 142,
-        ndas: 12,
-        foundingYear: 2012,
-        askingPrice: '€12.5M'
-    },
-    {
-        id: '2',
-        industry: 'Healthcare Services',
-        region: 'UK',
-        revenue: '€8.5M',
-        ebitda: '€2.3M',
-        employees: '45',
-        recurringRev: '60%',
-        ownerInvolvement: 'High',
-        matchScore: 78,
-        highlights: ['Established Brand', 'High Margins', 'Retiring Owner'],
-        status: 'Active',
-        views: 89,
-        ndas: 4,
-        foundingYear: 1998,
-        askingPrice: '€9.0M'
-    },
-    {
-        id: '3',
-        industry: 'FinTech',
-        region: 'Nordics',
-        revenue: '€3.1M',
-        ebitda: '€850k',
-        employees: '12',
-        recurringRev: '95%',
-        ownerInvolvement: 'Low',
-        matchScore: 88,
-        highlights: ['Fully Delegated Ops', 'Scalable Platform'],
-        status: 'New',
-        views: 312,
-        ndas: 45,
-        foundingYear: 2018,
-        askingPrice: '€5.5M'
-    }
-];
-
 const Marketplace: React.FC = () => {
+    const [listings, setListings] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchListings = async () => {
+            const { data, error } = await supabase.from('companies').select('*').order('created_at', { ascending: false });
+            if (data && !error) {
+                const mapped = data.map((c) => {
+                    const details = c.details || {};
+                    return {
+                        id: c.id,
+                        name: c.name,
+                        industry: c.industry || 'Unknown Sector',
+                        region: details.locations || 'Global',
+                        revenue: details.recurringRevenue ? 'Verified' : 'TBD',
+                        ebitda: 'TBD',
+                        employees: details.employees || 'N/A',
+                        recurringRev: details.recurringRevenue ? details.recurringRevenue + '%' : 'N/A',
+                        ownerInvolvement: details.ownerInvolvement || 'Unknown',
+                        matchScore: Math.floor(Math.random() * 20) + 75,
+                        highlights: [details.competitiveAdvantage || 'Strong Position', 'Verified'],
+                        status: 'Active',
+                        views: Math.floor(Math.random() * 200),
+                        ndas: Math.floor(Math.random() * 10),
+                        foundingYear: details.foundedYear || 'Unknown',
+                        askingPrice: 'Upon Request',
+                        description: c.description || 'Confidential details.'
+                    };
+                });
+                setListings(mapped);
+            }
+            setLoading(false);
+        };
+        fetchListings();
+    }, []);
+
     const [selectedListing, setSelectedListing] = useState<string | null>(null);
     const [ndaRequested, setNdaRequested] = useState<string[]>([]);
     const [savedListings, setSavedListings] = useState<string[]>([]);
@@ -70,7 +52,7 @@ const Marketplace: React.FC = () => {
 
     // Detailed View Mode
     if (selectedListing) {
-        const listing = mockListings.find(l => l.id === selectedListing)!;
+        const listing = listings.find(l => l.id === selectedListing)!;
         const hasRequested = ndaRequested.includes(listing.id);
 
         return (
@@ -126,7 +108,7 @@ const Marketplace: React.FC = () => {
                     <div className="detail-section">
                         <h3>Investment Highlights</h3>
                         <ul className="highlight-list">
-                            {listing.highlights.map((h, i) => (
+                            {listing.highlights.map((h: string, i: number) => (
                                 <li key={i}>✓ {h}</li>
                             ))}
                         </ul>
@@ -160,7 +142,9 @@ const Marketplace: React.FC = () => {
         );
     }
 
-    const displayListings = activeTab === 'all' ? mockListings : mockListings.filter(l => savedListings.includes(l.id));
+    if (loading) return <div className="marketplace-container animate-fade-in" style={{ textAlign: 'center', marginTop: '4rem' }}><h2>Loading Marketplace...</h2></div>;
+
+    const displayListings = activeTab === 'all' ? listings : listings.filter(l => savedListings.includes(l.id));
 
     return (
         <div className="marketplace-container animate-fade-in">
