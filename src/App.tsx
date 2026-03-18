@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './App.css';
 
 // Feature Views
@@ -7,158 +7,172 @@ import LegalDiagnostic from './components/LegalDiagnostic';
 import BusinessOverview from './components/BusinessOverview';
 import Marketplace from './components/Marketplace';
 import TheVault from './components/TheVault';
-import LandingPage from './components/LandingPage';
-import AuthModal from './components/AuthModal';
-import Footer from './components/Footer';
-import { supabase } from './lib/supabase';
+import BuyerProfileOnboarding from './components/BuyerProfileOnboarding';
 
 function App() {
+  const [persona, setPersona] = useState<'seller' | 'buyer' | null>(null);
   const [activeTab, setActiveTab] = useState<'hook' | 'overview' | 'shield' | 'market' | 'vault'>('overview');
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [session, setSession] = useState<any>(null);
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-
-  const fetchProfile = async (userId: string) => {
-    const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
-    if (!error && data) {
-      setUserProfile(data);
-    }
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    document.body.className = `${newTheme}-theme`; // Apply to body to override global css vars
   };
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session) fetchProfile(session.user.id);
-    });
+  if (!persona) {
+    return (
+      <div className={`app-container ${theme}-theme`} style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-dark)' }}>
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      if (session) {
-        fetchProfile(session.user.id);
-      } else {
-        setUserProfile(null);
-      }
-    });
+        {/* Top Nav for Landing */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2rem 4rem', alignItems: 'center' }}>
+          <div className="logo-container">
+            <div className="logo-mark">LB</div>
+            <h1 className="logo-text">LEGACY BRIDGE</h1>
+          </div>
+          <button
+            onClick={toggleTheme}
+            style={{ background: 'transparent', border: '1px solid var(--border)', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text)' }}
+          >
+            {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
+          </button>
+        </div>
 
-    return () => subscription.unsubscribe();
-  }, []);
+        {/* Hero Section */}
+        <div style={{ textAlign: 'center', marginTop: '4rem', marginBottom: '4rem', padding: '0 2rem' }}>
+          <h2 style={{ color: 'var(--text)', fontSize: '3.5rem', marginBottom: '1rem', letterSpacing: '-0.02em', fontWeight: 600 }}>Your legacy. Their future.<br />Our mission.</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto', lineHeight: '1.6' }}>
+            The premier small business marketplace. AI-matched opportunities, human-driven outcomes. Connect with verified buyers, sellers, and advisors nationwide.
+          </p>
+        </div>
 
-  const handleTabChange = (tab: 'hook' | 'overview' | 'shield' | 'market' | 'vault') => {
-    setActiveTab(tab);
-    setIsMobileMenuOpen(false);
-  };
+        {/* Trust Badges Mock */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '3rem', opacity: 0.6, marginBottom: '5rem', filter: 'grayscale(100%)' }}>
+          <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Forbes</span>
+          <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Bloomberg</span>
+          <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>WSJ</span>
+          <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>TechCrunch</span>
+        </div>
 
-  return (
-    <div className="app-container">
-      {/* Navigation */}
-      {session && (
-        <nav className="navbar glass-panel">
-          <div className="nav-brand">
-            <span className="brand-icon">🌉</span>
-            <span className="brand-text">Legacy Bridge</span>
+        {/* Action Cards */}
+        <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center', paddingBottom: '6rem' }}>
+          <div
+            className="glass-panel"
+            style={{ padding: '3rem 2rem', width: '320px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.3s', border: '1px solid var(--border)' }}
+            onClick={() => setPersona('seller')}
+            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
+            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+          >
+            <div style={{ fontSize: '3.5rem', marginBottom: '1.5rem' }}>🏢</div>
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Business Owner</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5' }}>Know your worth and protect your legacy. Get a data-backed valuation and find the right buyer.</p>
           </div>
 
-          <button
-            className="mobile-menu-btn"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
+          <div
+            className="glass-panel"
+            style={{ padding: '3rem 2rem', width: '320px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.3s', border: '1px solid var(--border)' }}
+            onClick={() => {
+              setPersona('buyer');
+              setActiveTab('overview');
+            }}
+            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
+            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
           >
-            {isMobileMenuOpen ? '✕' : '☰'}
-          </button>
+            <div style={{ fontSize: '3.5rem', marginBottom: '1.5rem' }}>💼</div>
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Investor / Buyer</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5' }}>A modern way to buy. Discover AI-matched, off-market opportunities before they list publicly.</p>
+          </div>
 
-          <div className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
-            <button
-              className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
-              onClick={() => handleTabChange('overview')}
-            >
-              Business Overview
-            </button>
-            <button
-              className={`nav-btn ${activeTab === 'hook' ? 'active' : ''}`}
-              onClick={() => handleTabChange('hook')}
-            >
-              Valuation Calculator
-            </button>
-            <button
-              className={`nav-btn ${activeTab === 'shield' ? 'active' : ''}`}
-              onClick={() => handleTabChange('shield')}
-            >
-              Diagnostic
-            </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`app-container ${theme}-theme`}>
+      {/* Navigation */}
+      <nav className="navbar glass-panel">
+        <div className="nav-logo-container" onClick={() => setPersona(null)} style={{ cursor: 'pointer' }}>
+          <div className="nav-logo-mark">LB</div>
+          <h1 className="nav-logo-text">LEGACY BRIDGE</h1>
+        </div>
+        <div className="nav-links">
+          {persona === 'seller' ? (
+            <>
+              <button
+                className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
+                onClick={() => setActiveTab('overview')}
+              >
+                Business Overview
+              </button>
+              <button
+                className={`nav-btn ${activeTab === 'hook' ? 'active' : ''}`}
+                onClick={() => setActiveTab('hook')}
+              >
+                Calculator
+              </button>
+              <button
+                className={`nav-btn ${activeTab === 'shield' ? 'active' : ''}`}
+                onClick={() => setActiveTab('shield')}
+              >
+                Legal Diagnostic
+              </button>
+            </>
+          ) : persona === 'buyer' ? (
+            <>
+              <button
+                className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
+                onClick={() => setActiveTab('overview')}
+              >
+                Investor Profile
+              </button>
+              <button
+                className={`nav-btn ${activeTab === 'market' ? 'active' : ''}`}
+                onClick={() => setActiveTab('market')}
+              >
+                Marketplace
+              </button>
+              <button
+                className={`nav-btn ${activeTab === 'vault' ? 'active' : ''}`}
+                onClick={() => setActiveTab('vault')}
+              >
+                The Vault
+              </button>
+            </>
+          ) : null}
+
+          {persona === 'seller' ? (
             <button
               className={`nav-btn ${activeTab === 'market' ? 'active' : ''}`}
-              onClick={() => handleTabChange('market')}
+              onClick={() => setActiveTab('market')}
             >
               Marketplace
             </button>
-            <button
-              className={`nav-btn ${activeTab === 'vault' ? 'active' : ''}`}
-              onClick={() => handleTabChange('vault')}
-            >
-              The Vault
-            </button>
-          </div>
-
-          <div className="nav-actions">
-            <div className="profile-dropdown-container">
-              <button
-                className="btn-secondary profile-toggle"
-                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-              >
-                Hi, {userProfile?.first_name || 'User'} ▾
-              </button>
-              {isProfileDropdownOpen && (
-                <div className="profile-dropdown-menu glass-panel animate-fade-in">
-                  <div className="dropdown-header">
-                    <p className="dropdown-name">
-                      {userProfile?.first_name} {userProfile?.last_name || ''}
-                    </p>
-                    <p className="dropdown-email">{session.user.email}</p>
-                  </div>
-                  <button
-                    className="dropdown-item sign-out-btn"
-                    onClick={() => {
-                      setIsProfileDropdownOpen(false);
-                      supabase.auth.signOut();
-                    }}
-                  >
-                    Sign Out
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </nav>
-      )}
+          ) : null}
+        </div>
+        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginRight: '1rem' }}>Logged in as: <strong>{persona === 'seller' ? 'Seller' : 'Buyer'}</strong></span>
+          <button
+            onClick={toggleTheme}
+            style={{ background: 'transparent', border: '1px solid var(--border)', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
+          </button>
+          <button className="btn-primary" onClick={() => setPersona(null)}>Switch Role</button>
+        </div>
+      </nav>
 
       {/* Main Content Area */}
       <main className="main-content">
-        {session ? (
-          <div className="content-wrapper animate-fade-in">
-            {activeTab === 'overview' && <BusinessOverview />}
-            {activeTab === 'hook' && <ValuationCalculator />}
-            {activeTab === 'shield' && <LegalDiagnostic />}
-            {activeTab === 'market' && <Marketplace />}
-            {activeTab === 'vault' && <TheVault />}
-          </div>
-        ) : (
-          <LandingPage onGetStarted={() => setIsAuthOpen(true)} />
-        )}
+        <div className="content-wrapper animate-fade-in">
+          {activeTab === 'overview' && persona === 'seller' && <BusinessOverview />}
+          {activeTab === 'overview' && persona === 'buyer' && <BuyerProfileOnboarding />}
+          {activeTab === 'hook' && persona === 'seller' && <ValuationCalculator />}
+          {activeTab === 'shield' && persona === 'seller' && <LegalDiagnostic />}
+          {activeTab === 'market' && (persona === 'seller' || persona === 'buyer') && <Marketplace />}
+          {activeTab === 'vault' && persona === 'buyer' && <TheVault />}
+        </div>
       </main>
-
-      {/* Global Footer */}
-      <Footer />
-
-      <AuthModal
-        isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
-        onSuccess={() => setIsAuthOpen(false)}
-      />
     </div>
   );
 }

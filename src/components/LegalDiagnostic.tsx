@@ -8,9 +8,10 @@ interface Question {
     type: 'boolean' | 'multiple';
     options?: string[];
     riskWeight: number;
+    industryFilter?: string[]; // Array of industries this applies to. If undefined, applies to all.
 }
 
-const questions: Question[] = [
+const allQuestions: Question[] = [
     {
         id: 'q1',
         category: 'Corporate Structure',
@@ -41,11 +42,45 @@ const questions: Question[] = [
         riskWeight: 5
     },
     {
-        id: 'q5',
-        category: 'Regulatory',
-        text: 'Does your software process protected data (e.g., PHI, PCI, or heavy PII) requiring specific compliance certifications (SOC2, HIPAA, GDPR)?',
+        id: 'q5_health',
+        category: 'Healthcare Regulatory',
+        text: 'Is your company fully HIPAA compliant with signed Business Associate Agreements (BAAs) for all covered entities?',
         type: 'boolean',
-        riskWeight: 3
+        riskWeight: 5,
+        industryFilter: ['HealthTech']
+    },
+    {
+        id: 'q5_saas',
+        category: 'SaaS Regulatory & Security',
+        text: 'Do you hold a current, valid SOC2 Type II certification, or equivalent ISO 27001?',
+        type: 'multiple',
+        options: ['Yes, current', 'Working on it / Type I only', 'No'],
+        riskWeight: 3,
+        industryFilter: ['SaaS / Tech']
+    },
+    {
+        id: 'q5_fintech',
+        category: 'FinTech Compliance',
+        text: 'Are you fully compliant with PCI-DSS and applicable regional financial regulations (e.g. KYC/AML laws)?',
+        type: 'boolean',
+        riskWeight: 5,
+        industryFilter: ['FinTech']
+    },
+    {
+        id: 'q5_mfg',
+        category: 'Manufacturing & Environmental',
+        text: 'Are you in full compliance with EPA / OSHA regulations, with no pending environmental liabilities or hazardous waste citations?',
+        type: 'boolean',
+        riskWeight: 5,
+        industryFilter: ['Manufacturing']
+    },
+    {
+        id: 'q5_retail',
+        category: 'Retail & Real Estate',
+        text: 'Are all commercial leases for your storefronts valid through the next 36 months without impending balloon renegotiations?',
+        type: 'boolean',
+        riskWeight: 4,
+        industryFilter: ['Retail']
     },
     {
         id: 'q6',
@@ -53,7 +88,16 @@ const questions: Question[] = [
         text: 'Are you aware of any "Copyleft" (e.g., GPL) open-source licenses integrated directly into your proprietary, distributed codebase?',
         type: 'multiple',
         options: ['No Copyleft Code', 'Yes, but strictly isolated', 'Unsure / Not Audited'],
-        riskWeight: 4
+        riskWeight: 4,
+        industryFilter: ['SaaS / Tech', 'HealthTech', 'FinTech']
+    },
+    {
+        id: 'q6_mfg',
+        category: 'Supply Chain Contracts',
+        text: 'Do you have secondary or backup suppliers contracted for all critical raw materials (i.e., avoiding single-point-of-failure concentration)?',
+        type: 'boolean',
+        riskWeight: 4,
+        industryFilter: ['Manufacturing', 'Retail']
     },
     {
         id: 'q7',
@@ -87,16 +131,27 @@ const questions: Question[] = [
 ];
 
 const LegalDiagnostic: React.FC = () => {
+    const [selectedIndustry, setSelectedIndustry] = useState<string>('');
+    const [activeQuestions, setActiveQuestions] = useState<Question[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
     const [answers, setAnswers] = useState<Record<string, string | boolean>>({});
     const [isComplete, setIsComplete] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [riskScore, setRiskScore] = useState<number | null>(null);
 
-    const handleAnswer = (answer: string | boolean) => {
-        setAnswers({ ...answers, [questions[currentStep].id]: answer });
+    const handleStart = (industry: string) => {
+        setSelectedIndustry(industry);
+        // Filter questions based on selected industry
+        const filtered = allQuestions.filter(q => !q.industryFilter || q.industryFilter.includes(industry));
+        setActiveQuestions(filtered);
+        setCurrentStep(0);
+        setAnswers({});
+    };
 
-        if (currentStep < questions.length - 1) {
+    const handleAnswer = (answer: string | boolean) => {
+        setAnswers({ ...answers, [activeQuestions[currentStep].id]: answer });
+
+        if (currentStep < activeQuestions.length - 1) {
             setCurrentStep(curr => curr + 1);
         } else {
             finishDiagnostic();
@@ -114,8 +169,13 @@ const LegalDiagnostic: React.FC = () => {
             if (answers['q3'] === true) risk += 15;
             if (answers['q4'] === 'No / Unsure') risk += 35; // Very high risk: IP issues
             if (answers['q4'] === 'Mostly (>80%)') risk += 15;
-            if (answers['q5'] === true) risk += 5; // Moderate: Just requires more DD
+            if (answers['q5_health'] === false) risk += 30; // HIPAA violation
+            if (answers['q5_saas'] === 'No') risk += 15; // SOC2 missing
+            if (answers['q5_fintech'] === false) risk += 30; // PCI violation
+            if (answers['q5_mfg'] === false) risk += 30; // EPA violation
+            if (answers['q5_retail'] === false) risk += 15; // Commercial lease risk
             if (answers['q6'] === 'Unsure / Not Audited') risk += 20;
+            if (answers['q6_mfg'] === false) risk += 20; // Supply chain risk
             if (answers['q7'] === true) risk += 25; // High risk: Data breach
             if (answers['q8'] === 'No / Unsure') risk += 15; // Moderate: Sales tax exposure
             if (answers['q8'] === 'Mostly/Working on it') risk += 5;
@@ -166,7 +226,7 @@ const LegalDiagnostic: React.FC = () => {
                             {100 - riskScore} / 100
                         </div>
                         <div className="risk-label" style={{ color: risk.color }}>
-                            Clean Score ({risk.label})
+                            Buyer Readiness Score ({risk.label})
                         </div>
 
                         <div className="progress-bar-bg">
@@ -183,14 +243,21 @@ const LegalDiagnostic: React.FC = () => {
 
                     <div className="findings-section">
                         <h3>Key Institutional Findings</h3>
+                        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1rem', fontStyle: 'italic' }}>
+                            * Note: Buyers will request formal documentation (contracts, cap tables, policies) during diligence to verify these responses.
+                        </p>
                         <ul className="findings-list">
                             {answers['q4'] === 'Yes, 100%' && <li className="finding-good">✓ Perfect IP Assignment chain validated.</li>}
                             {answers['q1'] === true && <li className="finding-good">✓ Clean capitalization table structure.</li>}
                             {answers['q9'] === true && <li className="finding-good">✓ Approved 409A valuation protects against equity penalties.</li>}
+                            {answers['q5_mfg'] === true && <li className="finding-good">✓ Environmental and OSHA compliance validated.</li>}
+                            {answers['q5_retail'] === true && <li className="finding-good">✓ Secure commercial real estate footprint.</li>}
 
                             {riskScore > 0 && <li className="finding-flag">⚠️ Missing documentation for legacy contractor agreements.</li>}
                             {answers['q2'] === true && <li className="finding-flag">⚠️ Change of Control clauses identified in top contracts. Require preemptive waivers before LOI.</li>}
                             {answers['q6'] === 'Unsure / Not Audited' && <li className="finding-flag">⚠️ Open Source audit highly recommended before proceeding.</li>}
+                            {answers['q6_mfg'] === false && <li className="finding-flag">⚠️ Supply Chain concentration risk: Secure backup vendors prior to marketing.</li>}
+                            {answers['q5_mfg'] === false && <li className="finding-flag">⚠️ Potential environmental liabilities or hazardous waste citations. Deal-breaker material.</li>}
                             {answers['q7'] === true && <li className="finding-flag">⚠️ Historical data breach flagged. Prepare detailed incident response documentation.</li>}
                             {answers['q9'] === false && <li className="finding-flag">⚠️ Potential Section 409A equity valuation issues. Remedy immediately before diligence.</li>}
                             {answers['q10'] === true && <li className="finding-flag">⚠️ Unauthorized AI training data usage is a critical IP risk for buyers.</li>}
@@ -210,22 +277,55 @@ const LegalDiagnostic: React.FC = () => {
         );
     }
 
-    const question = questions[currentStep];
+    if (!selectedIndustry) {
+        return (
+            <div className="diagnostic-container animate-fade-in">
+                <div className="diagnostic-header text-center">
+                    <h2>The Shield</h2>
+                    <p className="subtitle">Pre-empt buyer due diligence and verify your readiness anonymously.</p>
+                </div>
+
+                <div className="glass-panel questionnaire-panel text-center">
+                    <h3 style={{ marginBottom: '1.5rem', fontSize: '1.3rem' }}>Select your Primary Industry</h3>
+                    <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
+                        Our AI adjusts the diagnostic parameters based on specific institutional buyer criteria for your sector.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', maxWidth: '600px', margin: '0 auto' }}>
+                        {['SaaS / Tech', 'HealthTech', 'FinTech', 'Manufacturing', 'Retail', 'General / Other'].map(ind => (
+                            <button
+                                key={ind}
+                                className="btn-secondary"
+                                style={{ padding: '1rem', fontSize: '1.1rem', justifyContent: 'center' }}
+                                onClick={() => handleStart(ind)}
+                            >
+                                {ind}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    const question = activeQuestions[currentStep];
 
     return (
         <div className="diagnostic-container animate-fade-in">
             <div className="diagnostic-header text-center">
                 <h2>The Shield</h2>
-                <p className="subtitle">Pre-empt buyer due diligence. Verify your legal readiness anonymously before entering the market.</p>
+                <p className="subtitle">Pre-empt buyer due diligence based on {selectedIndustry} compliance.</p>
+                <div style={{ marginTop: '1rem', background: 'rgba(239, 68, 68, 0.05)', padding: '0.5rem 1rem', borderRadius: '4px', display: 'inline-block', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                    <span style={{ color: 'var(--error)', fontSize: '0.8rem', fontWeight: 600 }}>⚠️ NOT LEGAL ADVICE: This diagnostic is for educational and preparation purposes only.</span>
+                </div>
             </div>
 
             <div className="glass-panel questionnaire-panel">
                 <div className="progress-indicator">
-                    <div className="progress-text">Step {currentStep + 1} of {questions.length}</div>
+                    <div className="progress-text">Step {currentStep + 1} of {activeQuestions.length}</div>
                     <div className="mini-progress-bg">
                         <div
                             className="mini-progress-fill"
-                            style={{ width: `${((currentStep + 1) / questions.length) * 100}%` }}
+                            style={{ width: `${((currentStep + 1) / activeQuestions.length) * 100}%` }}
                         ></div>
                     </div>
                 </div>

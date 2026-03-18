@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import AddCompanyForm from './AddCompanyForm';
+import React, { useState } from 'react';
 import './Marketplace.css';
 
 // Mock Data for the Marketplace listings
@@ -16,7 +14,11 @@ const mockListings = [
         ownerInvolvement: 'Medium',
         matchScore: 92,
         highlights: ['High Growth', 'Low Churn', 'Proprietary Tech'],
-        status: 'Active'
+        status: 'Active',
+        views: 142,
+        ndas: 12,
+        foundingYear: 2012,
+        askingPrice: '€12.5M'
     },
     {
         id: '2',
@@ -29,7 +31,11 @@ const mockListings = [
         ownerInvolvement: 'High',
         matchScore: 78,
         highlights: ['Established Brand', 'High Margins', 'Retiring Owner'],
-        status: 'Active'
+        status: 'Active',
+        views: 89,
+        ndas: 4,
+        foundingYear: 1998,
+        askingPrice: '€9.0M'
     },
     {
         id: '3',
@@ -42,70 +48,29 @@ const mockListings = [
         ownerInvolvement: 'Low',
         matchScore: 88,
         highlights: ['Fully Delegated Ops', 'Scalable Platform'],
-        status: 'New'
+        status: 'New',
+        views: 312,
+        ndas: 45,
+        foundingYear: 2018,
+        askingPrice: '€5.5M'
     }
 ];
 
 const Marketplace: React.FC = () => {
     const [selectedListing, setSelectedListing] = useState<string | null>(null);
     const [ndaRequested, setNdaRequested] = useState<string[]>([]);
+    const [savedListings, setSavedListings] = useState<string[]>([]);
+    const [activeTab, setActiveTab] = useState<'all' | 'saved' | 'notifs'>('all');
+    const [isConfiguringMatch, setIsConfiguringMatch] = useState(false);
 
-    // Supabase States
-    const [companies, setCompanies] = useState<any[]>(mockListings);
-    const [userRole, setUserRole] = useState<string | null>(null);
-    const [userId, setUserId] = useState<string | null>(null);
-    const [isAddOpen, setIsAddOpen] = useState(false);
-
-    useEffect(() => {
-        fetchCompanies();
-        checkUser();
-
-        // Listen for auth changes to re-check user
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-            checkUser();
-        });
-        return () => subscription.unsubscribe();
-    }, []);
-
-    const checkUser = async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-            setUserId(session.user.id);
-            const { data } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
-            if (data) setUserRole(data.role);
-        } else {
-            setUserId(null);
-            setUserRole(null);
-        }
-    };
-
-    const fetchCompanies = async () => {
-        const { data, error } = await supabase.from('companies').select('*').order('created_at', { ascending: false });
-        if (!error && data && data.length > 0) {
-            const formattedData = data.map((dbItem: any) => ({
-                id: dbItem.id,
-                industry: dbItem.industry,
-                region: 'Global',
-                revenue: 'Confidential',
-                ebitda: dbItem.asking_price ? `€${(dbItem.asking_price / 1000000).toFixed(1)}M` : 'N/A',
-                employees: '10+',
-                recurringRev: 'TBD',
-                ownerInvolvement: 'Transition',
-                matchScore: Math.floor(Math.random() * 20) + 80,
-                highlights: [dbItem.description?.substring(0, 50) + '...', 'Verified Listing'],
-                status: 'New',
-                name: dbItem.name
-            }));
-            // Merge live data with mock placeholders
-            setCompanies([...formattedData, ...mockListings]);
-        } else {
-            setCompanies(mockListings);
-        }
+    const toggleSave = (id: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        setSavedListings(prev => prev.includes(id) ? prev.filter(l => l !== id) : [...prev, id]);
     };
 
     // Detailed View Mode
     if (selectedListing) {
-        const listing = companies.find((l: any) => l.id === selectedListing)!;
+        const listing = mockListings.find(l => l.id === selectedListing)!;
         const hasRequested = ndaRequested.includes(listing.id);
 
         return (
@@ -118,16 +83,28 @@ const Marketplace: React.FC = () => {
                     <div className="detail-header">
                         <div className="company-badge secret-badge">?</div>
                         <div className="detail-title">
-                            <h2>{listing.name || `Project ${listing.industry.split(' ')[0]} Alpha`}</h2>
+                            <h2>Project {listing.industry.split(' ')[0]} Alpha</h2>
                             <span className="industry-tag">{listing.industry}</span>
-                            <span className="region-tag">📍 {listing.region}</span>
+                            <span className="region-tag" style={{ marginLeft: '0.5rem' }}>📍 {listing.region} • Est. {listing.foundingYear}</span>
                         </div>
-                        <div className="match-score-large">
-                            {listing.matchScore}% Match
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                            <div className="match-score-large">
+                                {listing.matchScore}% Match
+                            </div>
+                            <button
+                                onClick={(e) => toggleSave(listing.id, e)}
+                                style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', padding: '0.5rem' }}
+                            >
+                                {savedListings.includes(listing.id) ? '⭐' : '☆'}
+                            </button>
                         </div>
                     </div>
 
                     <div className="metrics-grid">
+                        <div className="metric-box" style={{ background: 'rgba(111, 66, 193, 0.1)', border: '1px solid var(--primary)' }}>
+                            <label style={{ color: 'var(--primary)' }}>Asking Price</label>
+                            <p style={{ color: 'var(--text)', fontWeight: 700 }}>{listing.askingPrice}</p>
+                        </div>
                         <div className="metric-box">
                             <label>Revenue</label>
                             <p>{listing.revenue}</p>
@@ -149,7 +126,7 @@ const Marketplace: React.FC = () => {
                     <div className="detail-section">
                         <h3>Investment Highlights</h3>
                         <ul className="highlight-list">
-                            {listing.highlights.map((h: string, i: number) => (
+                            {listing.highlights.map((h, i) => (
                                 <li key={i}>✓ {h}</li>
                             ))}
                         </ul>
@@ -169,33 +146,96 @@ const Marketplace: React.FC = () => {
                                 </button>
                             )}
                         </div>
-                        <p className="blur-text">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                        </p>
+                    </div>
+
+                    <div className="detail-section" style={{ marginTop: '2rem', borderTop: '1px solid var(--border)', paddingTop: '2rem', textAlign: 'center' }}>
+                        <h3>Ready to Proceed?</h3>
+                        <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Once NDA is signed and diligence complete, request a direct introduction to the seller or their advisor.</p>
+                        <button className="btn-primary" style={{ width: '100%', maxWidth: '300px', margin: '0 auto' }}>
+                            Request Introduction
+                        </button>
                     </div>
                 </div>
             </div>
         );
     }
 
+    const displayListings = activeTab === 'all' ? mockListings : mockListings.filter(l => savedListings.includes(l.id));
+
     return (
         <div className="marketplace-container animate-fade-in">
-            <div className="marketplace-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+            <div className="marketplace-header">
                 <div>
                     <h2>Deal Marketplace</h2>
                     <p className="subtitle">Discover verified, off-market opportunities fitted to your criteria.</p>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
-                    <div className="investor-profile-toggle">
-                        <span className="status-indicator online"></span>
-                        {userRole === 'seller' ? 'Seller Profile Active' : 'Search Fund Profile Active'}
-                    </div>
-                    {userRole === 'seller' && (
-                        <button className="btn-primary" onClick={() => setIsAddOpen(true)}>
-                            + List New Company
-                        </button>
-                    )}
+                <div className="investor-profile-toggle" style={{ cursor: 'pointer' }} onClick={() => setIsConfiguringMatch(!isConfiguringMatch)}>
+                    <span className="status-indicator online"></span>
+                    AI Match Engine Active (Configure)
                 </div>
+            </div>
+
+            {isConfiguringMatch && (
+                <div className="glass-panel animate-fade-in" style={{ marginBottom: '2rem', border: '1px solid var(--primary)', background: 'rgba(111, 66, 193, 0.05)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                        <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span style={{ fontSize: '1.5rem' }}>🎯</span> Edit Target Acquisition Criteria
+                        </h3>
+                        <button className="btn-secondary small" onClick={() => setIsConfiguringMatch(false)}>Close List</button>
+                    </div>
+
+                    <div className="form-grid">
+                        <div className="form-group">
+                            <label>Target Industries</label>
+                            <input type="text" className="text-input" defaultValue="B2B SaaS, Managed IT, Healthcare" />
+                        </div>
+                        <div className="form-group">
+                            <label>EBITDA Range</label>
+                            <select className="select-input" defaultValue="1M-5M">
+                                <option value="0-500K">&lt; $500K</option>
+                                <option value="500K-1M">$500K - $1M</option>
+                                <option value="1M-5M">$1M - $5M</option>
+                                <option value="5M+">$5M+</option>
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label>Geographic Preference</label>
+                            <input type="text" className="text-input" defaultValue="North America, Western Europe" />
+                        </div>
+                        <div className="form-group">
+                            <label>Min Operator Reliance</label>
+                            <select className="select-input" defaultValue="Moderate">
+                                <option value="Low">Low - Fully Managed</option>
+                                <option value="Moderate">Moderate - Owner active</option>
+                                <option value="High">High - Owner is the business</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style={{ marginTop: '1.5rem', textAlign: 'right' }}>
+                        <button className="btn-primary" onClick={() => { alert('AI matching model retrained with new parameters.'); setIsConfiguringMatch(false); }}>Update AI Model</button>
+                    </div>
+                </div>
+            )}
+
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
+                <button
+                    onClick={() => setActiveTab('all')}
+                    style={{ background: 'none', border: 'none', color: activeTab === 'all' ? 'var(--primary)' : 'var(--text-muted)', fontSize: '1.1rem', cursor: 'pointer', fontWeight: activeTab === 'all' ? 600 : 400, borderBottom: activeTab === 'all' ? '2px solid var(--primary)' : 'none', paddingBottom: '0.5rem' }}
+                >
+                    All Opportunities
+                </button>
+                <button
+                    onClick={() => setActiveTab('saved')}
+                    style={{ background: 'none', border: 'none', color: activeTab === 'saved' ? 'var(--primary)' : 'var(--text-muted)', fontSize: '1.1rem', cursor: 'pointer', fontWeight: activeTab === 'saved' ? 600 : 400, borderBottom: activeTab === 'saved' ? '2px solid var(--primary)' : 'none', paddingBottom: '0.5rem' }}
+                >
+                    Saved / Watchlist ({savedListings.length})
+                </button>
+                <button
+                    onClick={() => setActiveTab('notifs')}
+                    style={{ background: 'none', border: 'none', color: activeTab === 'notifs' ? 'var(--primary)' : 'var(--text-muted)', fontSize: '1.1rem', cursor: 'pointer', fontWeight: activeTab === 'notifs' ? 600 : 400, borderBottom: activeTab === 'notifs' ? '2px solid var(--primary)' : 'none', paddingBottom: '0.5rem' }}
+                >
+                    Notifications (2)
+                </button>
             </div>
 
             <div className="marketplace-layout">
@@ -234,26 +274,39 @@ const Marketplace: React.FC = () => {
 
                 {/* Listings Grid */}
                 <div className="listings-grid">
-                    {companies.map(listing => (
+                    {displayListings.map(listing => (
                         <div key={listing.id} className="glass-panel listing-card">
                             <div className="listing-card-header">
                                 <span className="status-badge">{listing.status}</span>
-                                <div className="match-score">
-                                    <span className="score-value">{listing.matchScore}%</span> Fit
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <div className="match-score" style={{ background: 'rgba(0, 240, 255, 0.15)', border: '1px solid var(--accent)', padding: '4px 12px', borderRadius: '12px' }}>
+                                        <span className="score-value" style={{ color: 'var(--accent)', fontWeight: 'bold' }}>{listing.matchScore}%</span> AI Match
+                                    </div>
+                                    <button
+                                        onClick={(e) => toggleSave(listing.id, e)}
+                                        style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer' }}
+                                        title={savedListings.includes(listing.id) ? "Remove from Watchlist" : "Save to Watchlist"}
+                                    >
+                                        {savedListings.includes(listing.id) ? '⭐' : '☆'}
+                                    </button>
                                 </div>
                             </div>
 
-                            <h3 className="listing-title">{listing.name ? `Project ${listing.name}` : `Confidential ${listing.industry}`}</h3>
-                            <p className="listing-region">📍 {listing.region}</p>
+                            <h3 className="listing-title">Confidential {listing.industry}</h3>
+                            <p className="listing-region">📍 {listing.region} • Est. {listing.foundingYear}</p>
 
-                            <div className="listing-stats">
+                            <div className="listing-stats" style={{ gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem' }}>
+                                <div className="stat" style={{ background: 'rgba(111, 66, 193, 0.1)', borderRadius: '4px', padding: '0.5rem' }}>
+                                    <span className="stat-label" style={{ color: 'var(--primary)' }}>Asking Price</span>
+                                    <span className="stat-val" style={{ color: 'var(--text)', fontSize: '0.9rem' }}>{listing.askingPrice}</span>
+                                </div>
                                 <div className="stat">
                                     <span className="stat-label">Rev</span>
-                                    <span className="stat-val">{listing.revenue}</span>
+                                    <span className="stat-val" style={{ fontSize: '0.9rem' }}>{listing.revenue}</span>
                                 </div>
                                 <div className="stat">
                                     <span className="stat-label">EBITDA</span>
-                                    <span className="stat-val">{listing.ebitda}</span>
+                                    <span className="stat-val" style={{ fontSize: '0.9rem' }}>{listing.ebitda}</span>
                                 </div>
                             </div>
 
@@ -262,22 +315,22 @@ const Marketplace: React.FC = () => {
                                 <span className="attr-tag">{listing.ownerInvolvement} Owner Inv.</span>
                             </div>
 
-                            <button className="btn-secondary w-full mt-auto" onClick={() => setSelectedListing(listing.id)}>
+                            <div style={{ margin: '1rem 0', padding: '0.75rem', background: 'rgba(111, 66, 193, 0.05)', borderLeft: '3px solid var(--primary)', borderRadius: '4px', fontSize: '0.85rem' }}>
+                                <strong style={{ color: 'var(--text)' }}>Why it matches:</strong> Hit your EBITDA target & Industry pref.
+                            </div>
+
+                            <div style={{ marginTop: 'auto', display: 'flex', gap: '1rem', fontSize: '0.8rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border)', paddingTop: '0.8rem' }}>
+                                <span title="Profile Views">👁️ {listing.views} Views</span>
+                                <span title="NDAs Requested">📝 {listing.ndas} NDAs Requested</span>
+                            </div>
+
+                            <button className="btn-secondary w-full mt-auto" style={{ marginTop: '1rem' }} onClick={() => setSelectedListing(listing.id)}>
                                 View Details
                             </button>
                         </div>
                     ))}
                 </div>
             </div>
-
-            {userId && (
-                <AddCompanyForm
-                    isOpen={isAddOpen}
-                    onClose={() => setIsAddOpen(false)}
-                    onSuccess={fetchCompanies}
-                    userId={userId}
-                />
-            )}
         </div>
     );
 };
