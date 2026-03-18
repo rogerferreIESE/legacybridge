@@ -238,18 +238,27 @@
   }
 
   .nav-content {
-    display: none;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding-top: 0;
+    margin-top: 0;
+    border-top: 1px solid transparent;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
     width: 100%;
     flex-direction: column;
     align-items: stretch;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border-light);
-    margin-top: 0.5rem;
     gap: 1rem;
+    display: flex;
   }
 
   .nav-content.open {
-    display: flex;
+    max-height: 500px;
+    opacity: 1;
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+    border-top-color: var(--border-light);
   }
 
   .nav-links {
