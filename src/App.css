@@ -12,13 +12,16 @@
   justify-content: space-between;
   padding: var(--space-sm) var(--space-xl);
   margin: var(--space-lg) var(--space-xl);
-  /* Increased Top Margin */
   border-radius: var(--radius-xl);
   position: sticky;
   top: var(--space-md);
   z-index: 100;
-  background: rgba(14, 18, 30, 0.85);
-  /* Slightly darker for distinct header */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  /* Light pill border */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 /* Navigation Logo (Scaled down from Hero) */
@@ -43,7 +46,7 @@
   font-weight: 600;
   letter-spacing: 0.15em;
   margin: 0;
-  color: #FFFFFF;
+  color: var(--text-main);
 }
 
 .nav-logo-container {
@@ -76,18 +79,18 @@
   letter-spacing: 0.1em;
   margin: 0;
   color: #FFFFFF;
-  
-  
-  
+
+
+
 }
 
 .nav-links {
   display: flex;
   gap: 8px;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.03);
   padding: 6px;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .nav-btn {
@@ -109,15 +112,15 @@
 }
 
 .nav-btn.active {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-main);
+  box-shadow: none;
 }
 
 /* Base Buttons */
 .btn-primary {
-  background: #FFFFFF;
-  color: #0A0A0C;
+  background: var(--primary-hover);
+  color: #FFFFFF;
   border: none;
   padding: 12px 28px;
   border-radius: var(--radius-lg);
@@ -126,19 +129,19 @@
   font-size: 1.05rem;
   cursor: pointer;
   transition: all var(--transition-normal);
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  background: #F3F4F6;
-  box-shadow: 0 6px 25px rgba(255, 255, 255, 0.25);
+  background: var(--primary);
+  box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.15);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.03);
+  background: transparent;
   color: var(--text-main);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border-focus);
   padding: 12px 28px;
   border-radius: var(--radius-lg);
   font-family: var(--font-sans);
@@ -149,8 +152,8 @@
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.03);
+  border-color: var(--primary);
 }
 
 .btn-gold {
@@ -163,13 +166,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-normal);
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .btn-gold:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.02);
 }
 
 /* Main Content */

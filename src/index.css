@@ -6,30 +6,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Color Palette - V2 Premium Elegant Gray */
-  --bg-dark: #0A0A0C;
-  --bg-card: rgba(22, 22, 24, 0.75);
-  --bg-card-hover: rgba(30, 30, 34, 0.9);
+  /* Color Palette - Elegant Light Gray */
+  --bg-dark: #F9FAFB;
+  /* Very soft light gray background */
+  --bg-card: #FFFFFF;
+  /* Pure white cards */
+  --bg-card-hover: #F3F4F6;
 
-  --primary: #E5E7EB;
-  --primary-hover: #FFFFFF;
-  --primary-glow: rgba(255, 255, 255, 0.15);
+  --primary: #4B5563;
+  /* Deep slate gray */
+  --primary-hover: #111827;
+  /* Near black */
+  --primary-glow: rgba(0, 0, 0, 0.05);
 
-  --secondary: #9CA3AF;
-  --secondary-hover: #D1D5DB;
+  --secondary: #6B7280;
+  --secondary-hover: #9CA3AF;
 
-  --accent-gold: #6B7280;
-  --accent-gold-glow: rgba(107, 114, 128, 0.3);
+  --accent-gold: #374151;
+  /* Charcoal */
+  --accent-gold-glow: rgba(0, 0, 0, 0.05);
 
-  --text-main: #F3F4F6;
-  --text-muted: #9CA3AF;
+  --text-main: #111827;
+  /* Dark text */
+  --text-muted: #6B7280;
 
-  --border-light: rgba(255, 255, 255, 0.08);
-  --border-focus: rgba(255, 255, 255, 0.4);
+  --border-light: rgba(0, 0, 0, 0.08);
+  --border-focus: rgba(0, 0, 0, 0.2);
 
-  --success: #10B981;
-  --warning: #F59E0B;
-  --error: #EF4444;
+  --success: #059669;
+  --warning: #D97706;
+  --error: #DC2626;
 
   /* Typography */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -81,11 +87,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* Richer Background Gradient Mesh - Elegant Gray */
+  /* Subtle Background Grain/Mesh */
   background-image:
-    radial-gradient(circle at 10% 40%, rgba(255, 255, 255, 0.03), transparent 30%),
-    radial-gradient(circle at 90% 20%, rgba(255, 255, 255, 0.02), transparent 25%),
-    radial-gradient(circle at 50% 90%, rgba(255, 255, 255, 0.01), transparent 20%);
+    radial-gradient(circle at 10% 40%, rgba(0, 0, 0, 0.02), transparent 40%),
+    radial-gradient(circle at 90% 20%, rgba(0, 0, 0, 0.02), transparent 30%),
+    radial-gradient(circle at 50% 90%, rgba(0, 0, 0, 0.01), transparent 30%);
 }
 
 h1,
@@ -128,16 +134,13 @@ a:hover {
   color: var(--primary-hover);
 }
 
-/* Elevated Glassmorphism Card Utility */
+/* Elevated Card Utility */
 .glass-panel {
   background: var(--bg-card);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-light);
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  /* Stronger top highlight */
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-glass), var(--shadow-inner);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  /* Soft, elegant shadow */
 }
 
 /* Animations */
