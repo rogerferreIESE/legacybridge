@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import './BusinessOverview.css';
+import toast from 'react-hot-toast';
+import SkeletonLoader from './ui/SkeletonLoader';
 
 interface BusinessProfile {
     // Basic Info
@@ -103,12 +105,12 @@ const BusinessOverview: React.FC = () => {
 
     const handleSave = async () => {
         if (!userId) {
-            alert("You must be logged in to save a profile.");
+            toast.error("You must be logged in to save a profile.");
             return;
         }
 
         if (!profile.name || !profile.industry || !profile.description) {
-            alert('Please fill out the critical fields: Name, Industry, and Description.');
+            toast.error("Please fill out Name, Industry, and Description.");
             return;
         }
 
@@ -126,7 +128,8 @@ const BusinessOverview: React.FC = () => {
 
             if (error) throw error;
 
-            await checkUserAndFetchCompanies(); // Refresh list
+            await checkUserAndFetchCompanies();
+            toast.success('Business profile saved successfully!');
             setMode('list'); // Go back to list
 
             // Reset form
@@ -134,7 +137,7 @@ const BusinessOverview: React.FC = () => {
 
         } catch (err) {
             console.error("Error saving profile:", err);
-            alert("There was an error saving your profile.");
+            toast.error("There was an error saving your profile.");
         } finally {
             setIsSaving(false);
         }
@@ -162,9 +165,13 @@ const BusinessOverview: React.FC = () => {
         });
     }
 
-    if (loading) {
-        return <div className="overview-container" style={{ textAlign: 'center', marginTop: '4rem' }}>Loading profiles...</div>;
-    }
+    if (loading) return (
+        <div className="overview-container">
+            <div className="listings-grid" style={{ marginTop: '2rem' }}>
+                <SkeletonLoader type="card" count={2} />
+            </div>
+        </div>
+    );
 
     if (mode === 'list') {
         return (

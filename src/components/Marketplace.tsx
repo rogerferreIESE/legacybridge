@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import './Marketplace.css';
+import toast from 'react-hot-toast';
+import SkeletonLoader from './ui/SkeletonLoader';
 
 const Marketplace: React.FC = () => {
     const [listings, setListings] = useState<any[]>([]);
@@ -142,7 +144,15 @@ const Marketplace: React.FC = () => {
         );
     }
 
-    if (loading) return <div className="marketplace-container animate-fade-in" style={{ textAlign: 'center', marginTop: '4rem' }}><h2>Loading Marketplace...</h2></div>;
+    if (loading) return (
+        <div className="marketplace-container animate-fade-in">
+            <div className="marketplace-layout" style={{ marginTop: '2rem' }}>
+                <div className="marketplace-feed">
+                    <SkeletonLoader type="card" count={3} />
+                </div>
+            </div>
+        </div>
+    );
 
     const displayListings = activeTab === 'all' ? listings : listings.filter(l => savedListings.includes(l.id));
 
@@ -196,7 +206,7 @@ const Marketplace: React.FC = () => {
                         </div>
                     </div>
                     <div style={{ marginTop: '1.5rem', textAlign: 'right' }}>
-                        <button className="btn-primary" onClick={() => { alert('AI matching model retrained with new parameters.'); setIsConfiguringMatch(false); }}>Update AI Model</button>
+                        <button className="btn-primary" onClick={() => { toast.success('AI Matching algorithm updated!'); setIsConfiguringMatch(false); }}>Update AI Model</button>
                     </div>
                 </div>
             )}
