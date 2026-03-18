@@ -222,11 +222,11 @@ function App() {
             </button>
           ) : null}
         </div>
-        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginRight: '1rem' }}>Logged in as: <strong>{persona === 'seller' ? 'Seller' : 'Buyer'}</strong></span>
+        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexShrink: 0 }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginRight: '1rem', whiteSpace: 'nowrap' }}>Logged in as: <strong>{persona === 'seller' ? 'Seller' : 'Buyer'}</strong></span>
           <button
             onClick={toggleTheme}
-            style={{ background: 'transparent', border: '1px solid var(--border)', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            style={{ background: 'transparent', border: '1px solid var(--border-light)', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap' }}
           >
             {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
           </button>
