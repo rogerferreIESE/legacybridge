@@ -162,7 +162,7 @@ function App() {
       {/* Navigation */}
       <nav className="navbar glass-panel">
         <div className="nav-logo-container" onClick={() => setPersona(null)} style={{ cursor: 'pointer' }}>
-          <svg width="32" height="16" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '4px' }}>
+          <svg width="24" height="12" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '2px' }}>
             <path d="M6 24 C 6 12, 22 12, 22 24 L 16 24 C 16 16, 12 16, 12 24 Z" fill="currentColor" />
             <path d="M22 24 C 22 12, 38 12, 38 24 L 32 24 C 32 16, 28 16, 28 24 Z" fill="currentColor" opacity="0.6" />
           </svg>
@@ -222,13 +222,13 @@ function App() {
             </button>
           ) : null}
         </div>
-        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexShrink: 0 }}>
-          <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginRight: '1rem', whiteSpace: 'nowrap' }}>Logged in as: <strong>{persona === 'seller' ? 'Seller' : 'Buyer'}</strong></span>
+        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginRight: '0.5rem', whiteSpace: 'nowrap' }}>Logged in as: <strong>{persona === 'seller' ? 'Seller' : 'Buyer'}</strong></span>
           <button
             onClick={toggleTheme}
-            style={{ background: 'transparent', border: '1px solid var(--border-light)', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap' }}
+            style={{ background: 'transparent', border: '1px solid var(--border-light)', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap', fontSize: '0.8rem' }}
           >
-            {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
+            {theme === 'dark' ? '☀️ Mode' : '🌙 Mode'}
           </button>
           <button className="btn-primary" onClick={() => setPersona(null)} style={{ background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)' }}>Home</button>
           {session ? (

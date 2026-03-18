@@ -10,8 +10,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-xs) var(--space-md);
-  margin: var(--space-sm) var(--space-md);
+  padding: var(--space-xs) 1rem;
+  margin: var(--space-xs) 1rem;
   border-radius: var(--radius-xl);
   position: sticky;
   top: var(--space-md);
@@ -54,7 +54,7 @@
 .nav-logo-container {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   transition: transform 0.2s ease;
   flex-shrink: 0;
 }
@@ -77,7 +77,7 @@
 
 .nav-logo-text {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   margin: 0;
@@ -87,9 +87,9 @@
 
 .nav-links {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   background: rgba(0, 0, 0, 0.03);
-  padding: 6px;
+  padding: 4px;
   border-radius: var(--radius-lg);
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -98,10 +98,10 @@
   background: transparent;
   border: none;
   color: var(--text-muted);
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
   font-family: var(--font-sans);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -117,6 +117,20 @@
   background: rgba(0, 0, 0, 0.05);
   color: var(--text-main);
   box-shadow: none;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.nav-actions .btn-primary,
+.nav-actions .btn-secondary,
+.nav-actions .btn-gold {
+  padding: 6px 12px;
+  font-size: 0.85rem;
 }
 
 /* Base Buttons */
