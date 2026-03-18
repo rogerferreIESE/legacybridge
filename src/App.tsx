@@ -73,16 +73,16 @@ function App() {
 
           <div className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
             <button
-              className={`nav-btn ${activeTab === 'hook' ? 'active' : ''}`}
-              onClick={() => handleTabChange('hook')}
-            >
-              Calculator
-            </button>
-            <button
               className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
               onClick={() => handleTabChange('overview')}
             >
               Business Overview
+            </button>
+            <button
+              className={`nav-btn ${activeTab === 'hook' ? 'active' : ''}`}
+              onClick={() => handleTabChange('hook')}
+            >
+              Valuation Calculator
             </button>
             <button
               className={`nav-btn ${activeTab === 'shield' ? 'active' : ''}`}
