@@ -16,6 +16,7 @@ function App() {
   const [session, setSession] = useState<any>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authRolePending, setAuthRolePending] = useState<'seller' | 'buyer'>('seller');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -170,73 +171,73 @@ function App() {
         </div>
         <button className="mobile-menu-toggle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Toggle mobile menu">{isMobileMenuOpen ? "✕" : "☰"}</button>
         <div className={`nav-content ${isMobileMenuOpen ? "open" : ""}`}>
-        <div className="nav-links">
-          {persona === 'seller' ? (
-            <>
-              <button
-                className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
-                onClick={() => { setActiveTab('overview'); setIsMobileMenuOpen(false); }}
-              >
-                Business Overview
-              </button>
-              <button
-                className={`nav-btn ${activeTab === 'hook' ? 'active' : ''}`}
-                onClick={() => { setActiveTab('hook'); setIsMobileMenuOpen(false); }}
-              >
-                Calculator
-              </button>
-              <button
-                className={`nav-btn ${activeTab === 'shield' ? 'active' : ''}`}
-                onClick={() => { setActiveTab('shield'); setIsMobileMenuOpen(false); }}
-              >
-                Legal Diagnostic
-              </button>
-            </>
-          ) : persona === 'buyer' ? (
-            <>
-              <button
-                className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
-                onClick={() => { setActiveTab('overview'); setIsMobileMenuOpen(false); }}
-              >
-                Investor Profile
-              </button>
+          <div className="nav-links">
+            {persona === 'seller' ? (
+              <>
+                <button
+                  className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
+                  onClick={() => { setActiveTab('overview'); setIsMobileMenuOpen(false); }}
+                >
+                  Business Overview
+                </button>
+                <button
+                  className={`nav-btn ${activeTab === 'hook' ? 'active' : ''}`}
+                  onClick={() => { setActiveTab('hook'); setIsMobileMenuOpen(false); }}
+                >
+                  Calculator
+                </button>
+                <button
+                  className={`nav-btn ${activeTab === 'shield' ? 'active' : ''}`}
+                  onClick={() => { setActiveTab('shield'); setIsMobileMenuOpen(false); }}
+                >
+                  Legal Diagnostic
+                </button>
+              </>
+            ) : persona === 'buyer' ? (
+              <>
+                <button
+                  className={`nav-btn ${activeTab === 'overview' ? 'active' : ''}`}
+                  onClick={() => { setActiveTab('overview'); setIsMobileMenuOpen(false); }}
+                >
+                  Investor Profile
+                </button>
+                <button
+                  className={`nav-btn ${activeTab === 'market' ? 'active' : ''}`}
+                  onClick={() => { setActiveTab('market'); setIsMobileMenuOpen(false); }}
+                >
+                  Marketplace
+                </button>
+                <button
+                  className={`nav-btn ${activeTab === 'vault' ? 'active' : ''}`}
+                  onClick={() => { setActiveTab('vault'); setIsMobileMenuOpen(false); }}
+                >
+                  The Vault
+                </button>
+              </>
+            ) : null}
+
+            {persona === 'seller' ? (
               <button
                 className={`nav-btn ${activeTab === 'market' ? 'active' : ''}`}
                 onClick={() => { setActiveTab('market'); setIsMobileMenuOpen(false); }}
               >
                 Marketplace
               </button>
-              <button
-                className={`nav-btn ${activeTab === 'vault' ? 'active' : ''}`}
-                onClick={() => { setActiveTab('vault'); setIsMobileMenuOpen(false); }}
-              >
-                The Vault
-              </button>
-            </>
-          ) : null}
-
-          {persona === 'seller' ? (
+            ) : null}
+          </div>
+          <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginRight: '0.5rem', whiteSpace: 'nowrap' }}>Logged in as: <strong>{persona === 'seller' ? 'Seller' : 'Buyer'}</strong></span>
             <button
-              className={`nav-btn ${activeTab === 'market' ? 'active' : ''}`}
-              onClick={() => { setActiveTab('market'); setIsMobileMenuOpen(false); }}
+              onClick={toggleTheme}
+              style={{ background: 'transparent', border: '1px solid var(--border-light)', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap', fontSize: '0.8rem' }}
             >
-              Marketplace
+              {theme === 'dark' ? '☀️ Mode' : '🌙 Mode'}
             </button>
-          ) : null}
-        </div>
-        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-          <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginRight: '0.5rem', whiteSpace: 'nowrap' }}>Logged in as: <strong>{persona === 'seller' ? 'Seller' : 'Buyer'}</strong></span>
-          <button
-            onClick={toggleTheme}
-            style={{ background: 'transparent', border: '1px solid var(--border-light)', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.25rem', whiteSpace: 'nowrap', fontSize: '0.8rem' }}
-          >
-            {theme === 'dark' ? '☀️ Mode' : '🌙 Mode'}
-          </button>
-          <button className="btn-primary" onClick={() => { setPersona(null); setIsMobileMenuOpen(false); }} style={{ background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)' }}>Home</button>
-          {session ? (
-            <button className="btn-secondary" onClick={async () => { await supabase.auth.signOut(); setIsMobileMenuOpen(false); }}>Sign Out</button>
-          ) : null}
-        </div>
+            <button className="btn-primary" onClick={() => { setPersona(null); setIsMobileMenuOpen(false); }} style={{ background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)' }}>Home</button>
+            {session ? (
+              <button className="btn-secondary" onClick={async () => { await supabase.auth.signOut(); setIsMobileMenuOpen(false); }}>Sign Out</button>
+            ) : null}
+          </div>
         </div>
       </nav>
 
