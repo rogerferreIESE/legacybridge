@@ -10,8 +10,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-sm) var(--space-xl);
-  margin: var(--space-lg) var(--space-xl);
+  padding: var(--space-xs) var(--space-md);
+  margin: var(--space-sm) var(--space-md);
   border-radius: var(--radius-xl);
   position: sticky;
   top: var(--space-md);
@@ -20,10 +20,10 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-light);
-  /* Light pill border */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  overflow-x: auto;
 }
 
 /* Navigation Logo (Scaled down from Hero) */
@@ -98,10 +98,10 @@
   background: transparent;
   border: none;
   color: var(--text-muted);
-  padding: 10px 20px;
+  padding: 8px 12px;
   border-radius: var(--radius-md);
   font-family: var(--font-sans);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-fast);
