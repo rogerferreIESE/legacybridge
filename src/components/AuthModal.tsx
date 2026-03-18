@@ -6,13 +6,18 @@ interface AuthModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
+    defaultRole?: 'buyer' | 'seller';
 }
 
-export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
+export default function AuthModal({ isOpen, onClose, onSuccess, defaultRole = 'buyer' }: AuthModalProps) {
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState<'buyer' | 'seller'>('buyer');
+    const [role, setRole] = useState<'buyer' | 'seller'>(defaultRole);
+
+    React.useEffect(() => {
+        setRole(defaultRole);
+    }, [defaultRole]);
 
     // New Extended Profile Fields
     const [firstName, setFirstName] = useState('');

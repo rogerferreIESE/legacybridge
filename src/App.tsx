@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from './lib/supabase';
 import './App.css';
+import AuthModal from './components/AuthModal';
 
 // Feature Views
 import ValuationCalculator from './components/ValuationCalculator';
@@ -11,6 +13,34 @@ import BuyerProfileOnboarding from './components/BuyerProfileOnboarding';
 
 function App() {
   const [persona, setPersona] = useState<'seller' | 'buyer' | null>(null);
+  const [session, setSession] = useState<any>(null);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authRolePending, setAuthRolePending] = useState<'seller' | 'buyer'>('seller');
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) fetchAndSetPersona(session.user.id);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+        fetchAndSetPersona(session.user.id);
+      } else {
+        setPersona(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const fetchAndSetPersona = async (userId: string) => {
+    const { data } = await supabase.from('profiles').select('role').eq('id', userId).single();
+    if (data && (data.role === 'seller' || data.role === 'buyer')) {
+      setPersona(data.role);
+    }
+  };
   const [activeTab, setActiveTab] = useState<'hook' | 'overview' | 'shield' | 'market' | 'vault'>('overview');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
@@ -30,12 +60,27 @@ function App() {
             <div className="logo-mark">LB</div>
             <h1 className="logo-text">LEGACY BRIDGE</h1>
           </div>
-          <button
-            onClick={toggleTheme}
-            style={{ background: 'transparent', border: '1px solid var(--border)', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text)' }}
-          >
-            {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
-          </button>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <button
+              onClick={toggleTheme}
+              style={{ background: 'transparent', border: '1px solid var(--border)', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text)' }}
+            >
+              {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
+            </button>
+            {session ? (
+              <button
+                onClick={() => supabase.auth.signOut()}
+                style={{ background: 'transparent', border: '1px solid var(--border)', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', color: 'var(--text)' }}>
+                Sign Out
+              </button>
+            ) : (
+              <button
+                onClick={() => { setAuthRolePending('buyer'); setIsAuthOpen(true); }}
+                className="btn-primary" style={{ padding: '8px 24px' }}>
+                Login
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Hero Section */}
@@ -59,7 +104,15 @@ function App() {
           <div
             className="glass-panel"
             style={{ padding: '3rem 2rem', width: '320px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.3s', border: '1px solid var(--border)' }}
-            onClick={() => setPersona('seller')}
+            onClick={() => {
+              if (session) {
+                setPersona('seller');
+                setActiveTab('overview');
+              } else {
+                setAuthRolePending('seller');
+                setIsAuthOpen(true);
+              }
+            }}
             onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
             onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
           >
@@ -72,8 +125,13 @@ function App() {
             className="glass-panel"
             style={{ padding: '3rem 2rem', width: '320px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.3s', border: '1px solid var(--border)' }}
             onClick={() => {
-              setPersona('buyer');
-              setActiveTab('overview');
+              if (session) {
+                setPersona('buyer');
+                setActiveTab('overview');
+              } else {
+                setAuthRolePending('buyer');
+                setIsAuthOpen(true);
+              }
             }}
             onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
             onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
@@ -82,8 +140,16 @@ function App() {
             <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Investor / Buyer</h3>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5' }}>A modern way to buy. Discover AI-matched, off-market opportunities before they list publicly.</p>
           </div>
-
         </div>
+
+        <AuthModal
+          isOpen={isAuthOpen}
+          onClose={() => setIsAuthOpen(false)}
+          onSuccess={() => {
+            setIsAuthOpen(false);
+          }}
+          defaultRole={authRolePending}
+        />
       </div>
     );
   }
@@ -158,7 +224,10 @@ function App() {
           >
             {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
           </button>
-          <button className="btn-primary" onClick={() => setPersona(null)}>Switch Role</button>
+          <button className="btn-primary" onClick={() => setPersona(null)} style={{ background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)' }}>Home</button>
+          {session ? (
+            <button className="btn-secondary" onClick={() => supabase.auth.signOut()}>Sign Out</button>
+          ) : null}
         </div>
       </nav>
 
@@ -173,6 +242,15 @@ function App() {
           {activeTab === 'vault' && persona === 'buyer' && <TheVault />}
         </div>
       </main>
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onSuccess={() => {
+          setIsAuthOpen(false);
+        }}
+        defaultRole={authRolePending}
+      />
     </div>
   );
 }
