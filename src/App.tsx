@@ -58,8 +58,8 @@ function App() {
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2rem 4rem', alignItems: 'center' }}>
           <div className="logo-container">
             <svg width="48" height="24" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '8px' }}>
-              <path d="M6 24 C 6 12, 22 12, 22 24 L 16 24 C 16 16, 12 16, 12 24 Z" fill="#111827" />
-              <path d="M22 24 C 22 12, 38 12, 38 24 L 32 24 C 32 16, 28 16, 28 24 Z" fill="#6B7280" opacity="0.9" />
+              <path d="M6 24 C 6 12, 22 12, 22 24 L 16 24 C 16 16, 12 16, 12 24 Z" fill="currentColor" />
+              <path d="M22 24 C 22 12, 38 12, 38 24 L 32 24 C 32 16, 28 16, 28 24 Z" fill="currentColor" opacity="0.6" />
             </svg>
             <h1 className="logo-text">LEGACY BRIDGE</h1>
           </div>
@@ -162,7 +162,10 @@ function App() {
       {/* Navigation */}
       <nav className="navbar glass-panel">
         <div className="nav-logo-container" onClick={() => setPersona(null)} style={{ cursor: 'pointer' }}>
-          <div className="nav-logo-mark">LB</div>
+          <svg width="32" height="16" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: '4px' }}>
+            <path d="M6 24 C 6 12, 22 12, 22 24 L 16 24 C 16 16, 12 16, 12 24 Z" fill="currentColor" />
+            <path d="M22 24 C 22 12, 38 12, 38 24 L 32 24 C 32 16, 28 16, 28 24 Z" fill="currentColor" opacity="0.6" />
+          </svg>
           <h1 className="nav-logo-text">LEGACY BRIDGE</h1>
         </div>
         <div className="nav-links">

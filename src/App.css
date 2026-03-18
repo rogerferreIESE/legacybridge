@@ -78,10 +78,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   margin: 0;
-  color: #FFFFFF;
-
-
-
+  color: var(--text-main);
 }
 
 .nav-links {
@@ -104,6 +101,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
 .nav-btn:hover {
@@ -130,6 +128,7 @@
   cursor: pointer;
   transition: all var(--transition-normal);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
 }
 
 .btn-primary:hover {
@@ -149,6 +148,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-normal);
+  white-space: nowrap;
 }
 
 .btn-secondary:hover {
@@ -167,6 +167,7 @@
   cursor: pointer;
   transition: all var(--transition-normal);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
 }
 
 .btn-gold:hover {

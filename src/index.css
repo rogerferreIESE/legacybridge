@@ -6,36 +6,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Color Palette - Elegant Light Gray */
-  --bg-dark: #F9FAFB;
+  /* Color Palette - Default Dark Elegant Gray */
+  --bg-dark: #0A0A0C;
   /* Very soft light gray background */
-  --bg-card: #FFFFFF;
+  --bg-card: rgba(22, 22, 24, 0.75);
   /* Pure white cards */
-  --bg-card-hover: #F3F4F6;
+  --bg-card-hover: rgba(30, 30, 34, 0.9);
 
-  --primary: #4B5563;
+  --primary: #E5E7EB;
   /* Deep slate gray */
-  --primary-hover: #111827;
+  --primary-hover: #FFFFFF;
   /* Near black */
-  --primary-glow: rgba(0, 0, 0, 0.05);
+  --primary-glow: rgba(255, 255, 255, 0.15);
 
-  --secondary: #6B7280;
-  --secondary-hover: #9CA3AF;
+  --secondary: #9CA3AF;
+  --secondary-hover: #D1D5DB;
 
-  --accent-gold: #374151;
+  --accent-gold: #6B7280;
   /* Charcoal */
-  --accent-gold-glow: rgba(0, 0, 0, 0.05);
+  --accent-gold-glow: rgba(107, 114, 128, 0.3);
 
-  --text-main: #111827;
+  --text-main: #F3F4F6;
   /* Dark text */
-  --text-muted: #6B7280;
+  --text-muted: #9CA3AF;
 
-  --border-light: rgba(0, 0, 0, 0.08);
-  --border-focus: rgba(0, 0, 0, 0.2);
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(255, 255, 255, 0.4);
 
-  --success: #059669;
-  --warning: #D97706;
-  --error: #DC2626;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
 
   /* Typography */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -88,6 +88,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   /* Subtle Background Grain/Mesh */
+  background-image:
+    radial-gradient(circle at 10% 40%, rgba(255, 255, 255, 0.03), transparent 30%),
+    radial-gradient(circle at 90% 20%, rgba(255, 255, 255, 0.02), transparent 25%),
+    radial-gradient(circle at 50% 90%, rgba(255, 255, 255, 0.01), transparent 20%);
+}
+
+body.light-theme {
   background-image:
     radial-gradient(circle at 10% 40%, rgba(0, 0, 0, 0.02), transparent 40%),
     radial-gradient(circle at 90% 20%, rgba(0, 0, 0, 0.02), transparent 30%),
